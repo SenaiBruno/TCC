@@ -109,22 +109,29 @@
                 </div>
             </div>
             <div class="cat-item">
-                <div class="cat-content">
+                <a class="cat-content cat-link" href="https://zxninjaxz.itch.io/conectahub" target="_blank" rel="noopener noreferrer">
                     <div class="cat-icon"><i class="fa-solid fa-gamepad"></i></div>
                     <span>Game</span>
-                </div>
+                </a>
             </div>
             <div class="cat-item">
-                <div class="cat-content">
-                    <div class="cat-icon"><i class="fa-solid fa-robot"></i></div>
-                    <span>ChatBot</span>
-                </div>
+                <a class="cat-content cat-link" href="mensagens.html">
+                    <div class="cat-icon"><i class="fa-solid fa-comments"></i></div>
+                    <span>Chat</span>
+                </a>
             </div>
             <div class="cat-item">
                 <div class="cat-content">
                     <div class="cat-icon"><i class="fa-solid fa-mug-hot"></i></div>
                     <span>CoffeeBreak</span>
                 </div>
+            </div>
+            <!-- Admin Panel (somente para admins) -->
+            <div class="cat-item" id="admin-panel-btn" style="display: none;">
+                <a class="cat-content cat-link" href="admin.html">
+                    <div class="cat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);"><i class="fa-solid fa-shield-halved" style="color: white;"></i></div>
+                    <span>Admin</span>
+                </a>
             </div>
         </div>
 
@@ -164,6 +171,7 @@
         </a>
     </nav>
 
+    <script src="../static/database.js"></script>
     <script src="../static/home.js"></script>
 </body>
 

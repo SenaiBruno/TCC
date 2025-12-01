@@ -48,17 +48,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (isValid) {
-                // Simular login bem-sucedido
+                // Usar o novo sistema de banco de dados
+                const result = window.DB.validateLogin(usernameInput.value.trim(), passwordInput.value);
+                
+                if (!result.success) {
+                    if (result.error.includes('encontrado')) {
+                        showError('username-error', result.error);
+                    } else {
+                        showError('password-error', result.error);
+                    }
+                    return;
+                }
+                
+                // Login bem-sucedido
                 mostrarSpinner('loginBtn');
                 
                 setTimeout(() => {
                     // Salvar preferência "lembrar-me"
                     if (rememberCheckbox.checked) {
-                        localStorage.setItem('remember_user', usernameInput.value);
+                        localStorage.setItem('remember_user', result.user.name);
                     }
 
-                    // Salvar sessão
-                    sessionStorage.setItem('user_logged', usernameInput.value);
+                    // Criar sessão
+                    window.DB.login(result.user);
                     
                     // Redirecionar para home
                     window.location.href = 'home.html';
@@ -79,6 +91,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const fullnameInput = document.getElementById('fullname');
     const emailInput = document.getElementById('email');
     const departmentInput = document.getElementById('department');
+    const phoneInput = document.getElementById('phone');
+    const locationInput = document.getElementById('location');
     const senhaInput = document.getElementById('senha');
     const confirmaSenhaInput = document.getElementById('confirmaSenha');
     const termsCheckbox = document.getElementById('terms');
@@ -172,6 +186,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 isValid = false;
             }
 
+            // Validar telefone
+            if (!phoneInput.value.trim()) {
+                showError('phone-error', 'Telefone é obrigatório');
+                isValid = false;
+            } else if (phoneInput.value.trim().length < 10) {
+                showError('phone-error', 'Digite um telefone válido');
+                isValid = false;
+            }
+
+            // Validar localização
+            if (!locationInput.value.trim()) {
+                showError('location-error', 'Localização é obrigatória');
+                isValid = false;
+            }
+
             // Validar senha
             if (!senhaInput.value) {
                 showError('senha-error', 'Senha é obrigatória');
@@ -200,9 +229,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 mostrarSpinner('cadastroBtn');
                 
                 setTimeout(() => {
-                    // Simulação de sucesso
-                    alert('Cadastro realizado com sucesso! Redirecionando para login...');
-                    window.location.href = 'login.html';
+                    // Criar usuário no banco de dados
+                    const result = window.DB.createUser({
+                        fullName: fullnameInput.value.trim(),
+                        email: emailInput.value.trim(),
+                        password: senhaInput.value,
+                        department: departmentInput.options[departmentInput.selectedIndex].text,
+                        departmentValue: departmentInput.value,
+                        phone: phoneInput.value.trim(),
+                        location: locationInput.value.trim()
+                    });
+
+                    if (!result.success) {
+                        showError('email-error', result.error);
+                        const button = document.getElementById('cadastroBtn');
+                        button.innerHTML = '<span>Criar Conta</span><i class="fa-solid fa-arrow-right"></i>';
+                        button.disabled = false;
+                        return;
+                    }
+                    
+                    // Auto-login após cadastro
+                    window.DB.login(result.user);
+                    
+                    // Redirecionar para home
+                    window.location.href = 'home.html';
                 }, 1000);
             }
         });

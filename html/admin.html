@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - ConectaHub</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Header Admin -->
+        <header class="admin-header">
+            <div class="admin-header-left">
+                <h1><i class="fa-solid fa-shield-halved"></i> Painel Administrativo</h1>
+            </div>
+            <div class="admin-header-right">
+                <span class="admin-user" id="admin-name">Administrador</span>
+                <button class="btn-logout" id="btn-logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> Sair
+                </button>
+            </div>
+        </header>
+
+        <!-- Menu Lateral -->
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fa-solid fa-chart-line"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-section="users">
+                    <i class="fa-solid fa-users"></i> Usuários
+                </a>
+                <a href="#" class="nav-item" data-section="stats">
+                    <i class="fa-solid fa-chart-pie"></i> Estatísticas
+                </a>
+                <a href="#" class="nav-item" data-section="messages">
+                    <i class="fa-solid fa-envelope"></i> Mensagens
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fa-solid fa-gear"></i> Configurações
+                </a>
+                <a href="home.html" class="nav-item nav-back">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar ao Site
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="admin-content">
+            <!-- Dashboard -->
+            <section id="dashboard-section" class="admin-section active">
+                <h2>Visão Geral</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-users">0</h3>
+                            <p>Total de Usuários</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-messages">0</h3>
+                            <p>Total de Mensagens</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="active-users">0</h3>
+                            <p>Usuários Ativos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="admin-count">0</h3>
+                            <p>Administradores</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-activity">
+                    <h3>Atividade Recente do Sistema</h3>
+                    <div class="activity-timeline" id="system-activity">
+                        <p style="text-align: center; color: #708090; padding: 20px;">Nenhuma atividade registrada.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Usuários -->
+            <section id="users-section" class="admin-section">
+                <div class="section-header">
+                    <h2>Gerenciamento de Usuários</h2>
+                    <button class="btn-primary" id="btn-add-user">
+                        <i class="fa-solid fa-plus"></i> Novo Usuário
+                    </button>
+                </div>
+
+                <div class="search-bar">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="search-users" placeholder="Buscar usuários...">
+                </div>
+
+                <div class="users-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Departamento</th>
+                                <th>Tipo</th>
+                                <th>Data de Registro</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 20px;">Carregando usuários...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Estatísticas -->
+            <section id="stats-section" class="admin-section">
+                <h2>Estatísticas Detalhadas</h2>
+                <div class="stats-charts">
+                    <div class="chart-card">
+                        <h3>Usuários por Departamento</h3>
+                        <div id="department-chart" class="chart-placeholder">
+                            <p>Gráfico será implementado aqui</p>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Atividade Mensal</h3>
+                        <div id="activity-chart" class="chart-placeholder">
+                            <p>Gráfico será implementado aqui</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mensagens -->
+            <section id="messages-section" class="admin-section">
+                <h2>Sistema de Mensagens</h2>
+                <p style="color: #708090;">Visualização de todas as mensagens do sistema.</p>
+                <div id="all-messages-list">
+                    <p style="text-align: center; padding: 20px;">Nenhuma mensagem registrada.</p>
+                </div>
+            </section>
+
+            <!-- Configurações -->
+            <section id="settings-section" class="admin-section">
+                <h2>Configurações do Sistema</h2>
+                
+                <div class="settings-group">
+                    <h3>Gerenciamento de Dados</h3>
+                    <button class="btn-danger" id="btn-clear-db">
+                        <i class="fa-solid fa-trash"></i> Limpar Banco de Dados
+                    </button>
+                    <button class="btn-secondary" id="btn-export-db">
+                        <i class="fa-solid fa-download"></i> Exportar Dados
+                    </button>
+                    <button class="btn-secondary" id="btn-seed-db">
+                        <i class="fa-solid fa-database"></i> Criar Dados de Exemplo
+                    </button>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Informações do Sistema</h3>
+                    <div class="info-table">
+                        <div class="info-row">
+                            <span>Versão:</span>
+                            <span>1.0.0</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Última Atualização:</span>
+                            <span id="last-update">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="../static/database.js"></script>
+    <script src="../static/admin.js"></script>
+</body>
+</html>

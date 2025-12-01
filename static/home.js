@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationsPopup = document.getElementById('notifications-popup');
     const markAllReadBtn = document.getElementById('mark-all-read');
     const notificationBadge = document.querySelector('.notification-badge');
-    const unreadNotifications = document.querySelectorAll('.notification-item.unread');
     
     // Elementos do usuário
     const userAvatar = document.getElementById('user-avatar');
@@ -27,10 +26,43 @@ document.addEventListener('DOMContentLoaded', function() {
         else if (hour >= 18) greeting = 'Boa noite';
         
         userGreeting.textContent = `${greeting}, ${firstName}!`;
+
+        // Mostrar botão de admin se o usuário for admin
+        if (window.DB && window.DB.isAdmin()) {
+            const adminBtn = document.getElementById('admin-panel-btn');
+            if (adminBtn) {
+                adminBtn.style.display = 'block';
+            }
+        }
+    }
+    
+    // Carregar notificações do usuário
+    function loadNotifications() {
+        const currentUser = window.DB ? window.DB.getCurrentUser() : null;
+        const notificationsList = notificationsPopup.querySelector('.notifications-popup');
+        
+        if (!currentUser || !currentUser.notifications || currentUser.notifications.length === 0) {
+            // Usuário sem notificações - mostrar mensagem
+            const existingNotifications = notificationsPopup.querySelectorAll('.notification-item');
+            existingNotifications.forEach(item => item.remove());
+            
+            const emptyMessage = document.createElement('div');
+            emptyMessage.style.cssText = 'padding: 20px; text-align: center; color: #708090;';
+            emptyMessage.textContent = 'Você não tem notificações no momento.';
+            notificationsPopup.appendChild(emptyMessage);
+            
+            // Esconder badge
+            updateNotificationBadge(0);
+        } else {
+            // Carregar notificações do usuário
+            const unreadCount = currentUser.notifications.filter(n => !n.read).length;
+            updateNotificationBadge(unreadCount);
+        }
     }
     
     // Inicializar configurações do usuário
     setupUser();
+    loadNotifications();
     
     // Alternar a exibição do pop-up de notificações
     bellIcon.addEventListener('click', function(e) {
@@ -39,22 +71,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Marcar todas as notificações como lidas
-    markAllReadBtn.addEventListener('click', function() {
-        unreadNotifications.forEach(notification => {
-            notification.classList.remove('unread');
-            notification.style.animation = 'fadeIn 0.3s ease';
+    if (markAllReadBtn) {
+        markAllReadBtn.addEventListener('click', function() {
+            const unreadNotifications = document.querySelectorAll('.notification-item.unread');
+            unreadNotifications.forEach(notification => {
+                notification.classList.remove('unread');
+                notification.style.animation = 'fadeIn 0.3s ease';
+            });
+            
+            // Atualizar o badge de notificações
+            updateNotificationBadge(0);
         });
-        
-        // Atualizar o badge de notificações
-        updateNotificationBadge(0);
-    });
+    }
     
     // Marcar notificação individual como lida
     document.querySelectorAll('.notification-item').forEach(item => {
         item.addEventListener('click', function() {
             if (this.classList.contains('unread')) {
                 this.classList.remove('unread');
-                const currentCount = parseInt(notificationBadge.textContent);
+                const currentCount = parseInt(notificationBadge.textContent) || 0;
                 updateNotificationBadge(currentCount - 1);
                 
                 // Simular ação da notificação
