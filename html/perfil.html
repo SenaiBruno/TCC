@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/perfil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="user-info">
+                <a href="../html/home.html" class="back-link">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </a>
+                <div class="user-text">
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-edit" id="edit-profile">
+                    <i class="fa-solid fa-pen"></i>
+                    Editar
+                </button>
+            </div>
+        </header>
+
+        <!-- Profile Content -->
+        <div class="profile-content">
+            <!-- Profile Info Card -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar-large">
+                        <div class="avatar-large" id="large-avatar">J</div>
+                        <button class="avatar-edit" id="change-avatar">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+                    </div>
+                    <div class="profile-info">
+                        <h1 id="profile-name">João Silva</h1>
+                        <p id="profile-role">Desenvolvedor Front-end</p>
+                        <p id="profile-email">joao.silva@empresa.com</p>
+                    </div>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">85%</div>
+                        <div class="stat-label">Produtividade</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">42</div>
+                        <div class="stat-label">Tarefas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">12</div>
+                        <div class="stat-label">Projetos</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="info-section">
+                <h3>Informações Pessoais</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Nome Completo</label>
+                        <p id="info-fullname">João da Silva Santos</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Departamento</label>
+                        <p id="info-department">Tecnologia</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Cargo</label>
+                        <p id="info-position">Desenvolvedor Front-end Pleno</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Data de Admissão</label>
+                        <p id="info-hire-date">15/03/2022</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Telefone</label>
+                        <p id="info-phone">(11) 99999-9999</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Localização</label>
+                        <p id="info-location">São Paulo, SP</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skills -->
+            <div class="info-section">
+                <h3>Habilidades</h3>
+                <div class="skills-list">
+                    <div class="skill-item">
+                        <span class="skill-name">JavaScript</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 90%"></div>
+                        </div>
+                        <span class="skill-percent">90%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">React</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 85%"></div>
+                        </div>
+                        <span class="skill-percent">85%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">CSS</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 80%"></div>
+                        </div>
+                        <span class="skill-percent">80%</span>
+                    </div>
+                    <div class="skill-item">
+                        <span class="skill-name">TypeScript</span>
+                        <div class="skill-bar">
+                            <div class="skill-progress" style="width: 70%"></div>
+                        </div>
+                        <span class="skill-percent">70%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="info-section">
+                <h3>Atividade Recente</h3>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fa-solid fa-file-circle-check"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p>Finalizou o projeto "Dashboard App"</p>
+                            <span>Hoje às 14:30</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p>Participou da reunião de sprint</p>
+                            <span>Ontem às 10:00</span>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fa-solid fa-code-merge"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p>Merge realizado no repositório principal</p>
+                            <span>12 Jan 2024</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Menu -->
+    <nav class="bottom-menu">
+        <a href="home.html" class="menu-home">
+            <i class="fa-solid fa-house"></i>
+        </a>
+        <a href="ranking.html" class="menu-trophy">
+            <i class="fa-solid fa-trophy"></i>
+        </a>
+        <div class="plus">+</div>
+        <a href="mensagens.html" class="menu-messages">
+            <i class="fa-solid fa-comment"></i>
+        </a>
+        <a href="perfil.html" class="menu-user active">
+            <i class="fa-solid fa-user"></i>
+        </a>
+    </nav>
+
+    <script src="perfil.js"></script>
+</body>
+</html>

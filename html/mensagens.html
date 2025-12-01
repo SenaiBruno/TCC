@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens - Plataforma</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/mensagens.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar de Conversas -->
+        <aside class="sidebar-conversas">
+            <div class="header-mensagens">
+                <a href="home.html" class="btn-voltar-mensagens" title="Voltar">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                <h2>Mensagens</h2>
+                <button class="btn-nova-conversa" id="btnNovaConversa">
+                    <span>+</span> Nova Conversa
+                </button>
+            </div>
+
+            <div class="busca-conversas">
+                <input type="text" id="buscaConversa" placeholder="Buscar conversa...">
+            </div>
+
+            <div class="lista-conversas" id="listaConversas">
+                <!-- Conversas serão carregadas aqui -->
+                <div class="conversa-item ativo" data-id="1">
+                    <div class="conversa-avatar">
+                        <img src="../img/avatar1.jpg" alt="João Silva">
+                    </div>
+                    <div class="conversa-info">
+                        <h3>João Silva</h3>
+                        <p>Última mensagem recebida...</p>
+                        <span class="data-mensagem">14:30</span>
+                    </div>
+                    <span class="badge-nao-lida">2</span>
+                </div>
+
+                <div class="conversa-item" data-id="2">
+                    <div class="conversa-avatar">
+                        <img src="../img/avatar2.jpg" alt="Maria Santos">
+                    </div>
+                    <div class="conversa-info">
+                        <h3>Maria Santos</h3>
+                        <p>Tudo bem?</p>
+                        <span class="data-mensagem">10:15</span>
+                    </div>
+                    <span class="badge-nao-lida">1</span>
+                </div>
+
+                <div class="conversa-item" data-id="3">
+                    <div class="conversa-avatar">
+                        <img src="../img/avatar3.jpg" alt="Pedro Oliveira">
+                    </div>
+                    <div class="conversa-info">
+                        <h3>Pedro Oliveira</h3>
+                        <p>Você viu a mensagem anterior?</p>
+                        <span class="data-mensagem">Ontem</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Área de Chat -->
+        <section class="area-chat">
+            <div class="chat-header">
+                <div class="info-conversa">
+                    <div class="avatar-grande">
+                        <img src="../img/avatar1.jpg" alt="João Silva">
+                        <span class="status-online"></span>
+                    </div>
+                    <div class="dados-contato">
+                        <h2>João Silva</h2>
+                        <p class="status-texto">Online agora</p>
+                    </div>
+                </div>
+                <div class="opcoes-chat">
+                    <button class="btn-opcao" title="Informações">
+                        <i class="icon-info">ℹ</i>
+                    </button>
+                    <button class="btn-opcao" title="Videochamada">
+                        <i class="icon-video">📹</i>
+                    </button>
+                    <button class="btn-opcao" title="Chamada de áudio">
+                        <i class="icon-call">☎</i>
+                    </button>
+                    <button class="btn-opcao" title="Menu">
+                        <i class="icon-menu">⋮</i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mensagens -->
+            <div class="mensagens-container" id="mensagensContainer">
+                <div class="mensagem recebida">
+                    <div class="avatar-msg">
+                        <img src="../img/avatar1.jpg" alt="João Silva">
+                    </div>
+                    <div class="conteudo-msg">
+                        <div class="texto-msg">Oi! Como você está?</div>
+                        <span class="hora-msg">14:20</span>
+                    </div>
+                </div>
+
+                <div class="mensagem recebida">
+                    <div class="avatar-msg">
+                        <img src="../img/avatar1.jpg" alt="João Silva">
+                    </div>
+                    <div class="conteudo-msg">
+                        <div class="texto-msg">Tudo bem?</div>
+                        <span class="hora-msg">14:21</span>
+                    </div>
+                </div>
+
+                <div class="mensagem enviada">
+                    <div class="conteudo-msg">
+                        <div class="texto-msg">Oi João! Tudo certo!</div>
+                        <span class="hora-msg">14:22</span>
+                    </div>
+                </div>
+
+                <div class="mensagem recebida">
+                    <div class="avatar-msg">
+                        <img src="../img/avatar1.jpg" alt="João Silva">
+                    </div>
+                    <div class="conteudo-msg">
+                        <div class="texto-msg">Que legal! E aí, quanto tempo!</div>
+                        <span class="hora-msg">14:30</span>
+                    </div>
+                </div>
+
+                <div class="mensagem enviada">
+                    <div class="conteudo-msg">
+                        <div class="texto-msg">É verdade! Faz tempo mesmo</div>
+                        <span class="hora-msg">14:31</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input de Mensagem -->
+            <div class="input-mensagem">
+                <button class="btn-anexo" title="Anexar arquivo">
+                    <span>📎</span>
+                </button>
+                <input type="text" id="inputMensagem" placeholder="Digite uma mensagem..." class="campo-mensagem">
+                <button class="btn-emoji" title="Emojis">
+                    <span>😊</span>
+                </button>
+                <button class="btn-enviar" id="btnEnviar" title="Enviar mensagem">
+                    <span>➤</span>
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal de Nova Conversa -->
+    <div class="modal" id="modalNovaConversa">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nova Conversa</h3>
+                <button class="btn-fechar" id="btnFecharModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="buscaContatos" placeholder="Buscar contatos...">
+                <div class="lista-contatos" id="listaContatos">
+                    <!-- Contatos aparecerão aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Menu -->
+    <nav class="bottom-menu">
+        <a href="home.html" class="menu-home">
+            <i class="fa-solid fa-house"></i>
+        </a>
+        <a href="ranking.html" class="menu-trophy">
+            <i class="fa-solid fa-trophy"></i>
+        </a>
+        <div class="plus">+</div>
+        <a href="mensagens.html" class="menu-messages active">
+            <i class="fa-solid fa-comment"></i>
+        </a>
+        <a href="perfil.html" class="menu-user">
+            <i class="fa-solid fa-user"></i>
+        </a>
+    </nav>
+
+    <script src="../static/mensagens.js"></script>
+</body>
+</html>

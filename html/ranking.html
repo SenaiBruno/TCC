@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking</title>
+    <link rel="stylesheet" href="../static/ranking.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="back-button">
+                <a href="home.html" class="back-link">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+            </div>
+            <h1 class="page-title">🏆 Ranking</h1>
+            <div class="header-placeholder"></div>
+        </header>
+
+        <!-- Ranking Content -->
+        <main class="ranking-content">
+            <!-- Top 3 Ranking -->
+            <div class="top-three">
+                <!-- 2nd Place -->
+                <div class="rank-card rank-second">
+                    <div class="rank-number">2</div>
+                    <div class="player-avatar">
+                        <div class="avatar-circle">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Chloe</h3>
+                        <p class="player-xp">824 XP</p>
+                    </div>
+                </div>
+
+                <!-- 1st Place -->
+                <div class="rank-card rank-first">
+                    <div class="rank-number">1</div>
+                    <div class="player-avatar">
+                        <div class="avatar-circle">
+                            <i class="fa-solid fa-crown"></i>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Thiago</h3>
+                        <p class="player-xp">946 XP</p>
+                    </div>
+                </div>
+
+                <!-- 3rd Place -->
+                <div class="rank-card rank-third">
+                    <div class="rank-number">3</div>
+                    <div class="player-avatar">
+                        <div class="avatar-circle">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="player-info">
+                        <h3 class="player-name">Gabriel</h3>
+                        <p class="player-xp">769 XP</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rest of Ranking -->
+            <div class="ranking-list">
+                <div class="rank-item">
+                    <div class="rank-position">4</div>
+                    <div class="rank-avatar">
+                        <div class="avatar-small">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="rank-details">
+                        <span class="rank-name">Florencio Dias</span>
+                        <span class="rank-xp">723 XP</span>
+                    </div>
+                </div>
+
+                <div class="rank-item">
+                    <div class="rank-position">5</div>
+                    <div class="rank-avatar">
+                        <div class="avatar-small">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="rank-details">
+                        <span class="rank-name">Roselle Ehram</span>
+                        <span class="rank-xp">640 XP</span>
+                    </div>
+                </div>
+
+                <div class="rank-item">
+                    <div class="rank-position">6</div>
+                    <div class="rank-avatar">
+                        <div class="avatar-small">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="rank-details">
+                        <span class="rank-name">David Xavier</span>
+                        <span class="rank-xp">596 XP</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bottom Menu -->
+    <nav class="bottom-menu">
+        <a href="home.html" class="menu-home">
+            <i class="fa-solid fa-house"></i>
+        </a>
+        <a href="ranking.html" class="menu-trophy active">
+            <i class="fa-solid fa-trophy"></i>
+        </a>
+        <div class="plus">+</div>
+        <a href="mensagens.html" class="menu-messages">
+            <i class="fa-solid fa-comment"></i>
+        </a>
+        <a href="perfil.html" class="menu-user">
+            <i class="fa-solid fa-user"></i>
+        </a>
+    </nav>
+
+    <script src="../static/ranking.js"></script>
+</body>
+</html>

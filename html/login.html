@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ConectaHub</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="left">
+        <div class="left-content">
+            <div class="banner-text">
+                <h1>Bem-vindo ao <span>ConectaHub</span></h1>
+                <p>Sua plataforma de colaboração e gestão de equipes</p>
+                <ul class="features-list">
+                    <li><i class="fa-solid fa-check"></i> Comunique-se com sua equipe</li>
+                    <li><i class="fa-solid fa-check"></i> Gerencie suas tarefas</li>
+                    <li><i class="fa-solid fa-check"></i> Acompanhe seu desempenho</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="right">
+        <div class="login-box">
+            <img src="../img/logo.png" class="logo-img" alt="ConectaHub Logo">
+            <h2 class="login-title">Acesse sua conta</h2>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label><i class="fa-solid fa-user"></i> Usuário ou Email</label>
+                    <input type="text" id="username" placeholder="Digite seu usuário ou email" required>
+                    <span class="error-msg" id="username-error"></span>
+                </div>
+
+                <div class="input-group">
+                    <label><i class="fa-solid fa-lock"></i> Senha</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" placeholder="Digite sua senha" required>
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                    <span class="error-msg" id="password-error"></span>
+                </div>
+
+                <div class="options">
+                    <label><input type="checkbox" id="remember"> Lembrar-me</label>
+                    <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span>Login</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="signup-section">
+                <p class="signup-text">Não possui cadastro?</p>
+                <a href="cadastro.html" class="link-cadastro">
+                    <button type="button" class="btn-create">Criar uma conta</button>
+                </a>
+            </div>
+
+            <div class="divider">
+                <span>ou</span>
+            </div>
+
+            <div class="social-login">
+                <button type="button" class="btn-social btn-google">
+                    <i class="fab fa-google"></i> Google
+                </button>
+                <button type="button" class="btn-social btn-github">
+                    <i class="fab fa-github"></i> GitHub
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="../static/login.js"></script>
+</body>
+</html>

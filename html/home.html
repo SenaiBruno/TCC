@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard App</title>
+    <link rel="stylesheet" href="../static/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="user-info" id="user-info">
+                <a href="perfil.html" class="avatar-link">
+                    <div class="avatar" id="user-avatar">U</div>
+                </a>
+                <div class="user-text">
+                    <h2 id="user-greeting">Olá, Usuário!</h2>
+                    <p>Vamos ao trabalho</p>
+                </div>
+            </div>
+            <div class="bell-container">
+                <a href="#" class="bell-link" id="bell-icon">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </a>
+                <div class="notifications-popup" id="notifications-popup">
+                    <div class="notifications-header">
+                        <h3>Notificações</h3>
+                        <button class="mark-all-read" id="mark-all-read">Marcar todas como lidas</button>
+                    </div>
+                    <div class="notification-item unread">
+                        <div class="notification-icon">
+                            <i class="fa-solid fa-calendar-check"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Nova reunião agendada</div>
+                            <div class="notification-desc">Reunião de equipe marcada para amanhã às 10h</div>
+                            <div class="notification-time">Há 5 minutos</div>
+                        </div>
+                    </div>
+                    <div class="notification-item unread">
+                        <div class="notification-icon">
+                            <i class="fa-solid fa-file-circle-check"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Documento aprovado</div>
+                            <div class="notification-desc">Seu relatório trimestral foi aprovado</div>
+                            <div class="notification-time">Há 1 hora</div>
+                        </div>
+                    </div>
+                    <div class="notification-item unread">
+                        <div class="notification-icon">
+                            <i class="fa-solid fa-trophy"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Parabéns!</div>
+                            <div class="notification-desc">Você alcançou 80% das metas deste mês</div>
+                            <div class="notification-time">Há 2 horas</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon">
+                            <i class="fa-solid fa-mug-hot"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Coffee Break</div>
+                            <div class="notification-desc">Novo café especial disponível na copa</div>
+                            <div class="notification-time">Ontem</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Banner -->
+        <section class="banner">
+            <div class="banner-content">
+                <h1>Feed de notícias<br>internas</h1>
+                <button>Confira já!</button>
+            </div>
+            <div class="banner-icon">
+                <i class="fa-solid fa-bullhorn"></i>
+            </div>
+        </section>
+
+        <!-- Search -->
+        <div class="search">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Pesquisar...">
+        </div>
+
+        <!-- Categories -->
+        <h2 class="section-title">Categorias</h2>
+        <div class="categories">
+            <div class="cat-item">
+                <div class="cat-content">
+                    <div class="cat-icon"><i class="fa-solid fa-calendar"></i></div>
+                    <span>Agenda</span>
+                </div>
+            </div>
+            <div class="cat-item">
+                <div class="cat-content">
+                    <div class="cat-icon"><i class="fa-solid fa-file-lines"></i></div>
+                    <span>Documentos</span>
+                </div>
+            </div>
+            <div class="cat-item">
+                <div class="cat-content">
+                    <div class="cat-icon"><i class="fa-solid fa-gamepad"></i></div>
+                    <span>Game</span>
+                </div>
+            </div>
+            <div class="cat-item">
+                <div class="cat-content">
+                    <div class="cat-icon"><i class="fa-solid fa-robot"></i></div>
+                    <span>ChatBot</span>
+                </div>
+            </div>
+            <div class="cat-item">
+                <div class="cat-content">
+                    <div class="cat-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                    <span>CoffeeBreak</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance -->
+        <section class="performance">
+            <h2>Desempenho mensal</h2>
+            <div class="perf-content">
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="color-done"></div>
+                        <p>80% de tarefas concluídas</p>
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-pending"></div>
+                        <p>20% de tarefas pendentes</p>
+                    </div>
+                </div>
+                <div class="circle">
+                    <p>80%<br><small>Tarefas<br>totais</small></p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bottom Menu -->
+    <nav class="bottom-menu">
+        <i class="fa-solid fa-house"></i>
+        <a href="ranking.html" class="menu-trophy">
+            <i class="fa-solid fa-trophy"></i>
+        </a>
+        <div class="plus">+</div>
+        <a href="mensagens.html" class="menu-messages">
+            <i class="fa-solid fa-comment"></i>
+        </a>
+        <a href="perfil.html" class="menu-user">
+            <i class="fa-solid fa-user"></i>
+        </a>
+    </nav>
+
+    <script src="../static/home.js"></script>
+</body>
+
+</html>
