@@ -5,6 +5,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const markAllReadBtn = document.getElementById('mark-all-read');
     const notificationBadge = document.querySelector('.notification-badge');
     
+    // Botão de logout
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            if (confirm('Deseja realmente sair?')) {
+                if (window.DB) {
+                    window.DB.logout();
+                }
+                window.location.href = 'login.html';
+            }
+        });
+    }
+    
     // Elementos do usuário
     const userAvatar = document.getElementById('user-avatar');
     const userGreeting = document.getElementById('user-greeting');
@@ -63,6 +76,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar configurações do usuário
     setupUser();
     loadNotifications();
+    updatePerformanceChart();
+    
+    // Função para atualizar gráfico de desempenho
+    function updatePerformanceChart() {
+        const currentUser = window.DB ? window.DB.getCurrentUser() : null;
+        let completedPercent = 0;
+        
+        if (currentUser && currentUser.stats) {
+            const totalTasks = currentUser.stats.tasks || 0;
+            const completedTasks = Math.floor(totalTasks * 0.8); // Simular 80% concluído
+            completedPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+        }
+        
+        const pendingPercent = 100 - completedPercent;
+        
+        // Atualizar textos
+        document.getElementById('tasks-completed').textContent = `${completedPercent}% de tarefas concluídas`;
+        document.getElementById('tasks-pending').textContent = `${pendingPercent}% de tarefas pendentes`;
+        document.getElementById('progress-percent').textContent = completedPercent;
+        
+        // Atualizar gráfico circular
+        const circle = document.getElementById('performance-circle');
+        circle.setAttribute('data-progress', completedPercent);
+        
+        const degrees = (completedPercent / 100) * 360;
+        circle.style.background = `conic-gradient(
+            #4A90E2 0deg ${degrees}deg,
+            #e0e0e0 ${degrees}deg 360deg
+        )`;
+    }
     
     // Alternar a exibição do pop-up de notificações
     bellIcon.addEventListener('click', function(e) {

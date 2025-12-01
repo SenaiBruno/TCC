@@ -27,6 +27,9 @@
                     <i class="fa-solid fa-bell"></i>
                     <span class="notification-badge">3</span>
                 </a>
+                <button class="logout-btn" id="logout-btn" title="Sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
                 <div class="notifications-popup" id="notifications-popup">
                     <div class="notifications-header">
                         <h3>Notificações</h3>
@@ -142,15 +145,15 @@
                 <div class="legend">
                     <div class="legend-item">
                         <div class="color-done"></div>
-                        <p>80% de tarefas concluídas</p>
+                        <p id="tasks-completed">0% de tarefas concluídas</p>
                     </div>
                     <div class="legend-item">
                         <div class="color-pending"></div>
-                        <p>20% de tarefas pendentes</p>
+                        <p id="tasks-pending">100% de tarefas pendentes</p>
                     </div>
                 </div>
-                <div class="circle">
-                    <p>80%<br><small>Tarefas<br>totais</small></p>
+                <div class="circle" id="performance-circle" data-progress="0">
+                    <p><span id="progress-percent">0</span>%<br><small>Tarefas<br>totais</small></p>
                 </div>
             </div>
         </section>
