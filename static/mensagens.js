@@ -9,6 +9,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const mensagensContainer = document.getElementById('mensagensContainer');
     const listaConversas = document.getElementById('listaConversas');
 
+    // Mostrar nome do usuário logado (se disponível)
+    const userLoggedNameEl = document.getElementById('userLoggedName');
+    const loggedUser = sessionStorage.user_logged || sessionStorage.getItem('user_logged') || localStorage.remember_user || localStorage.getItem('remember_user');
+    if (userLoggedNameEl && loggedUser) {
+        userLoggedNameEl.textContent = loggedUser;
+    }
+
     // Abrir modal de nova conversa
     if (btnNovaConversa) {
         btnNovaConversa.addEventListener('click', function() {

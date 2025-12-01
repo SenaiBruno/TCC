@@ -20,6 +20,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Carregar dados do usuário
     function loadUserData() {
+        // Prioriza o nome armazenado na sessão (login) se existir
+        const logged = sessionStorage.user_logged || sessionStorage.getItem('user_logged') || localStorage.remember_user || localStorage.getItem('remember_user');
+        if (logged) {
+            userData.name = logged;
+            userData.fullName = logged;
+        }
         document.getElementById('profile-name').textContent = userData.name;
         document.getElementById('profile-role').textContent = userData.role;
         document.getElementById('profile-email').textContent = userData.email;
