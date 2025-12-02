@@ -3,10 +3,10 @@
 
 const SUPABASE_CONFIG = {
     // URL do seu projeto Supabase (encontre em Project Settings > API)
-    url: 'https://SEU_PROJETO.supabase.co',
+    url: 'https://eannacynhliacnhwwzmw.supabase.co',
     
     // Chave anônima pública (encontre em Project Settings > API > anon/public)
-    anonKey: 'SUA_CHAVE_ANONIMA_AQUI',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVhbm5hY3luaGxpYWNuaHd3em13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2Njk2MDQsImV4cCI6MjA4MDI0NTYwNH0.AQX_b49JlQzMd3cptVlnzmwGJouBl3YhugosmcU1h34',
 };
 
 // Cliente Supabase
