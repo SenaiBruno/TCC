@@ -54,10 +54,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar dados do usuário
     function loadUserData() {
         // Prioriza o nome armazenado na sessão (login) se existir
-        const logged = sessionStorage.user_logged || sessionStorage.getItem('user_logged') || localStorage.remember_user || localStorage.getItem('remember_user');
-        if (logged) {
-            userData.name = logged;
-            userData.fullName = logged;
+        const currentUser = window.DB ? window.DB.getCurrentUser() : null;
+        
+        if (currentUser) {
+            userData.name = currentUser.name || currentUser.fullName.split(' ')[0];
+            userData.fullName = currentUser.fullName;
+            userData.email = currentUser.email;
+            userData.department = currentUser.department;
+            userData.position = currentUser.position || 'Colaborador';
+            userData.role = currentUser.role || 'Colaborador';
+            userData.hireDate = new Date(currentUser.registrationDate).toLocaleDateString('pt-BR');
+            userData.phone = currentUser.phone || 'Não informado';
+            userData.location = currentUser.location || 'Não informado';
         }
         
         document.getElementById('profile-name').textContent = userData.name;
@@ -67,20 +75,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('info-department').textContent = userData.department;
         document.getElementById('info-position').textContent = userData.position;
         document.getElementById('info-hire-date').textContent = userData.hireDate;
-        document.getElementById('info-phone').textContent = userData.phone || 'Não informado';
-        document.getElementById('info-location').textContent = userData.location || 'Não informado';
+        document.getElementById('info-phone').textContent = userData.phone;
+        document.getElementById('info-location').textContent = userData.location;
         
-        // Configurar avatares
+        // Configurar avatares com primeira letra do nome
         const firstLetter = userData.name.charAt(0).toUpperCase();
-        profileAvatar.textContent = firstLetter;
-        largeAvatar.textContent = firstLetter;
+        if (largeAvatar) {
+            largeAvatar.textContent = firstLetter;
+        }
 
         // Atualizar estatísticas (usar dados reais do usuário)
-        const statsFromDB = window.DB && window.DB.getCurrentUser() ? window.DB.getCurrentUser().stats : null;
-        if (statsFromDB) {
-            document.querySelector('.stat-item:nth-child(1) .stat-number').textContent = statsFromDB.productivity + '%';
-            document.querySelector('.stat-item:nth-child(2) .stat-number').textContent = statsFromDB.tasks;
-            document.querySelector('.stat-item:nth-child(3) .stat-number').textContent = statsFromDB.projects;
+        if (currentUser && currentUser.stats) {
+            document.getElementById('stat-productivity').textContent = currentUser.stats.productivity || 0;
+            document.getElementById('stat-tasks').textContent = currentUser.stats.tasks || 0;
+            document.getElementById('stat-projects').textContent = currentUser.stats.projects || 0;
+        } else {
+            // Zerar estatísticas se não houver dados
+            document.getElementById('stat-productivity').textContent = 0;
+            document.getElementById('stat-tasks').textContent = 0;
+            document.getElementById('stat-projects').textContent = 0;
         }
 
         // Carregar habilidades (zerado para novos usuários)
@@ -92,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Carregar habilidades
     function loadSkills() {
-        const skillsList = document.querySelector('.skills-list');
+        const skillsList = document.getElementById('skills-list');
         const currentUser = window.DB ? window.DB.getCurrentUser() : null;
         
         if (currentUser && currentUser.skills && currentUser.skills.length > 0) {
@@ -111,13 +124,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else {
             // Mostrar mensagem para usuários sem habilidades
-            skillsList.innerHTML = '<p style="color: #708090; text-align: center;">Nenhuma habilidade cadastrada ainda.</p>';
+            skillsList.innerHTML = '<p style="color: #708090; text-align: center; padding: 20px;">Nenhuma habilidade cadastrada ainda.</p>';
         }
     }
 
     // Carregar atividades recentes
     function loadRecentActivities() {
-        const activityList = document.querySelector('.activity-list');
+        const activityList = document.getElementById('activity-list');
         const currentUser = window.DB ? window.DB.getCurrentUser() : null;
         
         if (currentUser && currentUser.recentActivities && currentUser.recentActivities.length > 0) {
@@ -138,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         } else {
             // Mostrar mensagem para usuários sem atividades
-            activityList.innerHTML = '<p style="color: #708090; text-align: center;">Nenhuma atividade recente.</p>';
+            activityList.innerHTML = '<p style="color: #708090; text-align: center; padding: 20px;">Nenhuma atividade recente.</p>';
         }
     }
 

@@ -399,7 +399,39 @@ const DB = {
                     tasks: (user.stats.tasks || 0) + 1,
                     productivity: (user.stats.productivity || 0) + task.points
                 };
-                this.updateUser(user.id, { stats: updatedStats });
+                
+                // Adicionar atividade recente
+                if (!user.recentActivities) {
+                    user.recentActivities = [];
+                }
+                
+                user.recentActivities.unshift({
+                    icon: 'fa-solid fa-clipboard-check',
+                    description: `Completou a tarefa "${task.title}"`,
+                    date: new Date().toLocaleString('pt-BR', { 
+                        day: '2-digit', 
+                        month: '2-digit', 
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })
+                });
+                
+                // Manter apenas as últimas 10 atividades
+                if (user.recentActivities.length > 10) {
+                    user.recentActivities = user.recentActivities.slice(0, 10);
+                }
+                
+                this.updateUser(user.id, { 
+                    stats: updatedStats,
+                    recentActivities: user.recentActivities
+                });
+                
+                // Atualizar sessão se for o usuário atual
+                const currentUser = this.getCurrentUser();
+                if (currentUser && currentUser.id === user.id) {
+                    this.login(user);
+                }
             }
         }
 

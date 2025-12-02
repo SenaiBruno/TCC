@@ -45,15 +45,15 @@
 
                 <div class="profile-stats">
                     <div class="stat-item">
-                        <div class="stat-number">85%</div>
-                        <div class="stat-label">Produtividade</div>
+                        <div class="stat-number" id="stat-productivity">0</div>
+                        <div class="stat-label">XP Total</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">42</div>
+                        <div class="stat-number" id="stat-tasks">0</div>
                         <div class="stat-label">Tarefas</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">12</div>
+                        <div class="stat-number" id="stat-projects">0</div>
                         <div class="stat-label">Projetos</div>
                     </div>
                 </div>
@@ -93,69 +93,16 @@
             <!-- Skills -->
             <div class="info-section">
                 <h3>Habilidades</h3>
-                <div class="skills-list">
-                    <div class="skill-item">
-                        <span class="skill-name">JavaScript</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 90%"></div>
-                        </div>
-                        <span class="skill-percent">90%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span class="skill-name">React</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 85%"></div>
-                        </div>
-                        <span class="skill-percent">85%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span class="skill-name">CSS</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 80%"></div>
-                        </div>
-                        <span class="skill-percent">80%</span>
-                    </div>
-                    <div class="skill-item">
-                        <span class="skill-name">TypeScript</span>
-                        <div class="skill-bar">
-                            <div class="skill-progress" style="width: 70%"></div>
-                        </div>
-                        <span class="skill-percent">70%</span>
-                    </div>
+                <div class="skills-list" id="skills-list">
+                    <p style="color: #708090; text-align: center; padding: 20px;">Nenhuma habilidade cadastrada ainda.</p>
                 </div>
             </div>
 
             <!-- Recent Activity -->
             <div class="info-section">
                 <h3>Atividade Recente</h3>
-                <div class="activity-list">
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fa-solid fa-file-circle-check"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p>Finalizou o projeto "Dashboard App"</p>
-                            <span>Hoje às 14:30</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fa-solid fa-comments"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p>Participou da reunião de sprint</p>
-                            <span>Ontem às 10:00</span>
-                        </div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fa-solid fa-code-merge"></i>
-                        </div>
-                        <div class="activity-content">
-                            <p>Merge realizado no repositório principal</p>
-                            <span>12 Jan 2024</span>
-                        </div>
-                    </div>
+                <div class="activity-list" id="activity-list">
+                    <p style="color: #708090; text-align: center; padding: 20px;">Nenhuma atividade recente.</p>
                 </div>
             </div>
         </div>
