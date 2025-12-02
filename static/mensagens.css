@@ -950,9 +950,19 @@
 }
 
 /* Responsividade */
+@media (max-width: 1024px) {
+    .sidebar-conversas {
+        width: 280px;
+    }
+
+    .conteudo-msg {
+        max-width: 65%;
+    }
+}
+
 @media (max-width: 768px) {
     .sidebar-conversas {
-        width: 300px;
+        width: 260px;
     }
 
     .conteudo-msg {
@@ -960,11 +970,12 @@
     }
 
     .mensagens-container {
-        padding: 15px;
+        padding: 15px 10px;
     }
 
     .input-mensagem {
         padding: 12px 15px;
+        gap: 8px;
     }
 
     .chat-header {
@@ -983,45 +994,61 @@
         padding: 6px 10px;
         font-size: 16px;
     }
+
+    .texto-msg {
+        font-size: 14px;
+        padding: 10px 14px;
+    }
+
+    .btn-anexo,
+    .btn-emoji {
+        min-width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    .btn-enviar {
+        min-width: 42px;
+        height: 42px;
+    }
+
+    .campo-mensagem {
+        font-size: 14px;
+        padding: 10px 14px;
+    }
 }
 
-@media (max-width: 480px) {
-    .container {
-        flex-direction: column;
-    }
-
+@media (max-width: 640px) {
     .sidebar-conversas {
+        position: fixed;
+        left: -100%;
+        width: 280px;
+        z-index: 1001;
+        transition: left 0.3s ease;
+        box-shadow: 4px 0 20px rgba(0,0,0,0.2);
+    }
+
+    .sidebar-conversas.show {
+        left: 0;
+    }
+
+    .area-chat {
         width: 100%;
-        height: auto;
-        max-height: 150px;
-        border-right: none;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .lista-conversas {
-        flex-direction: row;
-        overflow-x: auto;
-        overflow-y: hidden;
-        padding: 10px 5px;
-        display: flex;
-    }
-
-    .conversa-item {
-        flex-shrink: 0;
-        width: 80px;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .conversa-info h3,
-    .conversa-info p,
-    .data-mensagem,
-    .badge-nao-lida {
-        display: none;
     }
 
     .conteudo-msg {
-        max-width: 85%;
+        max-width: 75%;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar-conversas {
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .conteudo-msg {
+        max-width: 80%;
     }
 
     .opcoes-chat {
@@ -1030,25 +1057,98 @@
 
     .btn-opcao {
         padding: 6px 8px;
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .chat-header {
-        flex-direction: column;
+        padding: 10px 12px;
+    }
+
+    .info-conversa {
         gap: 10px;
+    }
+
+    .avatar-grande {
+        width: 40px;
+        height: 40px;
+    }
+
+    .dados-contato h2 {
+        font-size: 16px;
     }
 
     .modal-content {
         width: 95%;
+        max-width: none;
     }
 
     .header-mensagens {
-        flex-direction: column;
-        gap: 10px;
+        padding: 15px;
+    }
+
+    .header-mensagens h2 {
+        font-size: 18px;
     }
 
     .btn-nova-conversa {
-        width: 100%;
-        justify-content: center;
+        padding: 8px 14px;
+        font-size: 12px;
+    }
+
+    .input-mensagem {
+        gap: 6px;
+        padding: 10px 12px;
+    }
+
+    .btn-anexo,
+    .btn-emoji {
+        display: none;
+    }
+
+    .campo-mensagem {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    .btn-enviar {
+        min-width: 38px;
+        height: 38px;
+        font-size: 16px;
+    }
+
+    .texto-msg {
+        font-size: 14px;
+        padding: 9px 12px;
+    }
+
+    .mensagens-container {
+        padding: 12px 8px;
+        gap: 12px;
+    }
+
+    .empty-chat-state {
+        padding: 40px 20px;
+    }
+
+    .empty-chat-icon {
+        width: 100px;
+        height: 100px;
+    }
+
+    .empty-chat-icon i {
+        font-size: 48px;
+    }
+
+    .empty-chat-state h3 {
+        font-size: 20px;
+    }
+
+    .empty-chat-state p {
+        font-size: 14px;
+    }
+
+    .btn-start-chat {
+        padding: 12px 24px;
+        font-size: 14px;
     }
 }

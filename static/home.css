@@ -975,9 +975,19 @@ body {
 }
 
 /* Responsividade */
+@media (max-width: 1024px) {
+    .modal-content {
+        max-width: 90%;
+    }
+}
+
 @media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
     .container {
-        padding: 0 15px;
+        padding: 0 10px;
     }
     
     .categories {
@@ -997,6 +1007,8 @@ body {
     
     .circle {
         order: 1;
+        width: 120px;
+        height: 120px;
     }
     
     .notifications-popup {
@@ -1013,17 +1025,64 @@ body {
         height: 40px;
         font-size: 20px;
     }
+
+    .banner-content h1 {
+        font-size: 20px;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-width: none;
+        max-height: 85vh;
+    }
+
+    .modal-body {
+        padding: 20px 15px;
+    }
+
+    .tasks-list {
+        gap: 10px;
+    }
+
+    .task-item {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .task-actions {
+        justify-content: stretch;
+    }
+
+    .btn-accept,
+    .btn-complete {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .header {
+        padding: 12px 15px;
+    }
+
+    .bell-container {
+        gap: 10px;
+    }
 }
 
 @media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
     .categories {
         grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
     
     .banner {
         flex-direction: column;
         text-align: center;
         gap: 15px;
+        padding: 20px 15px;
     }
     
     .banner-icon {
@@ -1031,17 +1090,96 @@ body {
     }
     
     .user-info {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
+        flex-direction: row;
+        gap: 12px;
     }
     
     .cat-item {
-        padding: 15px 5px;
+        padding: 15px 8px;
     }
     
     .cat-content {
         padding: 8px;
+    }
+
+    .cat-item span {
+        font-size: 12px;
+    }
+
+    .circle {
+        width: 100px;
+        height: 100px;
+    }
+
+    .circle p {
+        font-size: 14px;
+    }
+
+    .circle p small {
+        font-size: 11px;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+
+    .performance h2 {
+        font-size: 18px;
+    }
+
+    .modal-header h2 {
+        font-size: 18px;
+    }
+
+    .tabs {
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .tab {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    .filters {
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .filter-pill {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+
+    .task-meta {
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: 11px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        width: 100%;
+    }
+
+    .logout-btn {
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+
+    .search input {
+        font-size: 14px;
     }
 }
 
