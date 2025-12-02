@@ -54,7 +54,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar dados do usuário
     function loadUserData() {
         // Prioriza o nome armazenado na sessão (login) se existir
-        const currentUser = window.DB ? window.DB.getCurrentUser() : null;
+        let currentUser = window.DB ? window.DB.getCurrentUser() : null;
+        // Garantir dados mais recentes do usuário vindo do banco local
+        if (currentUser && window.DB && typeof window.DB.findUser === 'function') {
+            const fresh = window.DB.findUser('id', currentUser.id);
+            if (fresh) {
+                currentUser = fresh;
+                // Atualiza sessão com o usuário fresco para refletir estatísticas e atividades
+                window.DB.login(fresh);
+            }
+        }
         
         if (currentUser) {
             userData.name = currentUser.name || currentUser.fullName.split(' ')[0];
@@ -169,6 +178,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Inicializar dados do usuário
     loadUserData();
+
+    // Atualizar automaticamente quando a aba voltar a ficar visível
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            loadUserData();
+            loadRecentActivities();
+            loadSkills();
+        }
+    });
 
     // Menu ativo
     const menuItems = document.querySelectorAll('.bottom-menu i');
