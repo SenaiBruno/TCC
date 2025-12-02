@@ -29,7 +29,18 @@ const DB = {
 
     // ========== USUÁRIOS ==========
     
-    async getAllUsers() {
+    getAllUsers() {
+        if (this.mode === 'supabase') {
+            // Versão síncrona não suportada em Supabase - usar localStorage como fallback
+            console.warn('getAllUsers síncrono não suportado em modo Supabase');
+            return [];
+        } else {
+            const users = localStorage.getItem(this.STORAGE_KEYS.USERS);
+            return users ? JSON.parse(users) : [];
+        }
+    },
+    
+    async getAllUsersAsync() {
         if (this.mode === 'supabase') {
             const { data, error } = await supabaseClient
                 .from('users')
@@ -98,7 +109,7 @@ const DB = {
             return { success: true, user: this.convertUserFromDB(data) };
         } else {
             // Modo localStorage (código original)
-            const users = this.getAllUsers();
+            const users = await this.getAllUsersAsync();
             
             if (users.find(u => u.email.toLowerCase() === userData.email.toLowerCase())) {
                 return { success: false, error: 'Email já cadastrado' };
@@ -154,7 +165,7 @@ const DB = {
             }
         } else {
             // Modo localStorage (código original)
-            const users = this.getAllUsers();
+            const users = await this.getAllUsersAsync();
             
             if (value === undefined) {
                 const search = field.toLowerCase();
@@ -236,7 +247,17 @@ const DB = {
 
     // ========== TAREFAS ==========
     
-    async getAllTasks() {
+    getAllTasks() {
+        if (this.mode === 'supabase') {
+            console.warn('getAllTasks síncrono não suportado em modo Supabase');
+            return [];
+        } else {
+            const tasks = localStorage.getItem(this.STORAGE_KEYS.TASKS);
+            return tasks ? JSON.parse(tasks) : [];
+        }
+    },
+    
+    async getAllTasksAsync() {
         if (this.mode === 'supabase') {
             const { data, error } = await supabaseClient
                 .from('tasks')
@@ -391,7 +412,7 @@ const DB = {
     },
 
     async completeTask(taskId) {
-        const tasks = await this.getAllTasks();
+        const tasks = await this.getAllTasksAsync();
         const task = tasks.find(t => t.id === taskId);
         
         if (!task) {
@@ -467,7 +488,7 @@ const DB = {
     // ========== NOTIFICAÇÕES ==========
     
     async notifyDepartment(departmentValue, notificationData) {
-        const users = await this.getAllUsers();
+        const users = await this.getAllUsersAsync();
         const departmentUsers = users.filter(u => u.departmentValue === departmentValue);
 
         if (this.mode === 'supabase') {
@@ -611,8 +632,8 @@ const DB = {
         return user && user.isAdmin === true;
     },
 
-    createDefaultAdmin() {
-        const users = this.getAllUsers();
+    async createDefaultAdmin() {
+        const users = await this.getAllUsersAsync();
         const adminExists = users.find(u => u.email === 'admin@conectahub.com');
         
         if (!adminExists) {
@@ -629,11 +650,10 @@ const DB = {
                 isAdmin: true
             };
             
-            this.createUser(adminUser).then(result => {
-                if (result.success) {
-                    console.log('✅ Usuário admin criado com sucesso!');
-                }
-            });
+            const result = await this.createUser(adminUser);
+            if (result.success) {
+                console.log('✅ Usuário admin criado com sucesso!');
+            }
         }
     },
 
