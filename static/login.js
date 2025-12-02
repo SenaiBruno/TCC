@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Validar e enviar login form
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             // Limpar erros anteriores
@@ -48,10 +48,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (isValid) {
+                mostrarSpinner('loginBtn');
+                
                 // Usar o novo sistema de banco de dados
-                const result = window.DB.validateLogin(usernameInput.value.trim(), passwordInput.value);
+                const result = await window.DB.validateLogin(usernameInput.value.trim(), passwordInput.value);
                 
                 if (!result.success) {
+                    const button = document.getElementById('loginBtn');
+                    button.innerHTML = '<span>Login</span><i class="fa-solid fa-arrow-right"></i>';
+                    button.disabled = false;
+                    
                     if (result.error.includes('encontrado')) {
                         showError('username-error', result.error);
                     } else {
@@ -61,8 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 
                 // Login bem-sucedido
-                mostrarSpinner('loginBtn');
-                
                 setTimeout(() => {
                     // Salvar preferência "lembrar-me"
                     if (rememberCheckbox.checked) {
@@ -153,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Validar e enviar cadastro form
     if (cadastroForm) {
-        cadastroForm.addEventListener('submit', function(e) {
+        cadastroForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
             // Limpar erros anteriores
@@ -228,26 +232,26 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isValid) {
                 mostrarSpinner('cadastroBtn');
                 
-                setTimeout(() => {
-                    // Criar usuário no banco de dados
-                    const result = window.DB.createUser({
-                        fullName: fullnameInput.value.trim(),
-                        email: emailInput.value.trim(),
-                        password: senhaInput.value,
-                        department: departmentInput.options[departmentInput.selectedIndex].text,
-                        departmentValue: departmentInput.value,
-                        phone: phoneInput.value.trim(),
-                        location: locationInput.value.trim()
-                    });
+                // Criar usuário no banco de dados
+                const result = await window.DB.createUser({
+                    fullName: fullnameInput.value.trim(),
+                    email: emailInput.value.trim(),
+                    password: senhaInput.value,
+                    department: departmentInput.options[departmentInput.selectedIndex].text,
+                    departmentValue: departmentInput.value,
+                    phone: phoneInput.value.trim(),
+                    location: locationInput.value.trim()
+                });
 
-                    if (!result.success) {
-                        showError('email-error', result.error);
-                        const button = document.getElementById('cadastroBtn');
-                        button.innerHTML = '<span>Criar Conta</span><i class="fa-solid fa-arrow-right"></i>';
-                        button.disabled = false;
-                        return;
-                    }
-                    
+                if (!result.success) {
+                    showError('email-error', result.error);
+                    const button = document.getElementById('cadastroBtn');
+                    button.innerHTML = '<span>Criar Conta</span><i class="fa-solid fa-arrow-right"></i>';
+                    button.disabled = false;
+                    return;
+                }
+                
+                setTimeout(() => {
                     // Auto-login após cadastro
                     window.DB.login(result.user);
                     
