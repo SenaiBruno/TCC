@@ -6,7 +6,8 @@ const DB = {
     STORAGE_KEYS: {
         USERS: 'conectahub_users',
         MESSAGES: 'conectahub_messages',
-        CURRENT_USER: 'conectahub_current_user'
+        CURRENT_USER: 'conectahub_current_user',
+        TASKS: 'conectahub_tasks'
     },
 
     // ========== USUÁRIOS ==========
@@ -283,6 +284,214 @@ const DB = {
             msg.read = true;
             this.saveMessages(messages);
         }
+    },
+
+    // ========== TAREFAS ==========
+
+    // Obter todas as tarefas
+    getAllTasks() {
+        const tasks = localStorage.getItem(this.STORAGE_KEYS.TASKS);
+        return tasks ? JSON.parse(tasks) : [];
+    },
+
+    // Salvar tarefas
+    saveTasks(tasks) {
+        localStorage.setItem(this.STORAGE_KEYS.TASKS, JSON.stringify(tasks));
+    },
+
+    // Criar nova tarefa (apenas administradores)
+    createTask(taskData) {
+        // Verificar se usuário é admin
+        const currentUser = this.getCurrentUser();
+        if (!currentUser || !currentUser.isAdmin) {
+            return { success: false, error: 'Apenas administradores podem criar tarefas' };
+        }
+
+        // Validar dados obrigatórios
+        if (!taskData.title || !taskData.department) {
+            return { success: false, error: 'Título e departamento são obrigatórios' };
+        }
+
+        const tasks = this.getAllTasks();
+        
+        const newTask = {
+            id: this.generateId(),
+            title: taskData.title,
+            description: taskData.description || '',
+            department: taskData.department,
+            departmentValue: taskData.departmentValue,
+            createdBy: currentUser.id,
+            createdByName: currentUser.fullName,
+            createdAt: new Date().toISOString(),
+            points: taskData.points || 10,
+            status: 'pending', // pending, in_progress, completed
+            assignedTo: null
+        };
+
+        tasks.push(newTask);
+        this.saveTasks(tasks);
+
+        // Notificar todos os usuários do departamento
+        this.notifyDepartment(taskData.departmentValue, {
+            type: 'new_task',
+            taskId: newTask.id,
+            title: 'Nova tarefa disponível',
+            description: `${taskData.title}`,
+            icon: 'fa-clipboard-list'
+        });
+
+        return { success: true, task: newTask };
+    },
+
+    // Obter tarefas por departamento
+    getTasksByDepartment(departmentValue) {
+        const tasks = this.getAllTasks();
+        return tasks.filter(task => task.departmentValue === departmentValue);
+    },
+
+    // Obter tarefas do usuário
+    getUserTasks(userId) {
+        const tasks = this.getAllTasks();
+        return tasks.filter(task => task.assignedTo === userId);
+    },
+
+    // Atribuir tarefa a usuário
+    assignTask(taskId, userId) {
+        const tasks = this.getAllTasks();
+        const task = tasks.find(t => t.id === taskId);
+        
+        if (!task) {
+            return { success: false, error: 'Tarefa não encontrada' };
+        }
+
+        if (task.assignedTo) {
+            return { success: false, error: 'Tarefa já atribuída' };
+        }
+
+        task.assignedTo = userId;
+        task.status = 'in_progress';
+        task.assignedAt = new Date().toISOString();
+        
+        this.saveTasks(tasks);
+        return { success: true, task: task };
+    },
+
+    // Completar tarefa
+    completeTask(taskId) {
+        const tasks = this.getAllTasks();
+        const task = tasks.find(t => t.id === taskId);
+        
+        if (!task) {
+            return { success: false, error: 'Tarefa não encontrada' };
+        }
+
+        task.status = 'completed';
+        task.completedAt = new Date().toISOString();
+        
+        this.saveTasks(tasks);
+
+        // Atualizar stats do usuário
+        if (task.assignedTo) {
+            const user = this.findUser('id', task.assignedTo);
+            if (user) {
+                const updatedStats = {
+                    ...user.stats,
+                    tasks: (user.stats.tasks || 0) + 1,
+                    productivity: (user.stats.productivity || 0) + task.points
+                };
+                this.updateUser(user.id, { stats: updatedStats });
+            }
+        }
+
+        return { success: true, task: task };
+    },
+
+    // ========== NOTIFICAÇÕES ==========
+
+    // Notificar todos os usuários de um departamento
+    notifyDepartment(departmentValue, notificationData) {
+        const users = this.getAllUsers();
+        const departmentUsers = users.filter(u => u.departmentValue === departmentValue);
+
+        departmentUsers.forEach(user => {
+            if (!user.notifications) {
+                user.notifications = [];
+            }
+
+            const notification = {
+                id: this.generateId(),
+                type: notificationData.type,
+                taskId: notificationData.taskId,
+                title: notificationData.title,
+                description: notificationData.description,
+                icon: notificationData.icon || 'fa-bell',
+                timestamp: new Date().toISOString(),
+                read: false
+            };
+
+            user.notifications.unshift(notification);
+
+            // Manter apenas as últimas 50 notificações
+            if (user.notifications.length > 50) {
+                user.notifications = user.notifications.slice(0, 50);
+            }
+        });
+
+        this.saveUsers(users);
+    },
+
+    // Marcar notificação como lida
+    markNotificationAsRead(notificationId) {
+        const currentUser = this.getCurrentUser();
+        if (!currentUser) return { success: false, error: 'Usuário não encontrado' };
+
+        const users = this.getAllUsers();
+        const user = users.find(u => u.id === currentUser.id);
+        
+        if (!user || !user.notifications) {
+            return { success: false, error: 'Notificações não encontradas' };
+        }
+
+        const notification = user.notifications.find(n => n.id === notificationId);
+        if (notification) {
+            notification.read = true;
+            this.saveUsers(users);
+            
+            // Atualizar sessão
+            this.login(user);
+            
+            return { success: true };
+        }
+
+        return { success: false, error: 'Notificação não encontrada' };
+    },
+
+    // Marcar todas as notificações como lidas
+    markAllNotificationsAsRead() {
+        const currentUser = this.getCurrentUser();
+        if (!currentUser) return { success: false, error: 'Usuário não encontrado' };
+
+        const users = this.getAllUsers();
+        const user = users.find(u => u.id === currentUser.id);
+        
+        if (!user || !user.notifications) {
+            return { success: false, error: 'Notificações não encontradas' };
+        }
+
+        user.notifications.forEach(n => n.read = true);
+        this.saveUsers(users);
+        
+        // Atualizar sessão
+        this.login(user);
+        
+        return { success: true };
+    },
+
+    // Obter notificações não lidas
+    getUnreadNotificationsCount() {
+        const currentUser = this.getCurrentUser();
+        if (!currentUser || !currentUser.notifications) return 0;
+        return currentUser.notifications.filter(n => !n.read).length;
     },
 
     // ========== UTILITÁRIOS ==========

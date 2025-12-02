@@ -136,6 +136,13 @@
                     <span>Admin</span>
                 </a>
             </div>
+            <!-- Criar Tarefa (somente para admins) -->
+            <div class="cat-item" id="create-task-btn" style="display: none;">
+                <div class="cat-content">
+                    <div class="cat-icon" style="background: linear-gradient(135deg, #f39c12, #e67e22);"><i class="fa-solid fa-plus-circle" style="color: white;"></i></div>
+                    <span>Criar Tarefa</span>
+                </div>
+            </div>
         </div>
 
         <!-- Performance -->
@@ -172,7 +179,53 @@
         <a href="perfil.html" class="menu-user">
             <i class="fa-solid fa-user"></i>
         </a>
-    </nav>
+        </nav>
+
+    <!-- Modal de Criar Tarefa -->
+    <div class="modal" id="modal-create-task">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-clipboard-list"></i> Criar Nova Tarefa</h2>
+                <span class="close-modal" id="close-create-task">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-create-task">
+                    <div class="form-group">
+                        <label for="task-title"><i class="fa-solid fa-heading"></i> Título da Tarefa</label>
+                        <input type="text" id="task-title" placeholder="Digite o título da tarefa" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description"><i class="fa-solid fa-align-left"></i> Descrição</label>
+                        <textarea id="task-description" rows="4" placeholder="Descreva a tarefa..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-department"><i class="fa-solid fa-building"></i> Departamento</label>
+                        <select id="task-department" required>
+                            <option value="">Selecione o departamento</option>
+                            <option value="ti">Tecnologia da Informação</option>
+                            <option value="rh">Recursos Humanos</option>
+                            <option value="financeiro">Financeiro</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="vendas">Vendas</option>
+                            <option value="operacoes">Operações</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-points"><i class="fa-solid fa-star"></i> Pontos XP</label>
+                        <input type="number" id="task-points" min="5" max="100" value="10" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">
+                            <i class="fa-solid fa-check"></i> Criar Tarefa
+                        </button>
+                        <button type="button" class="btn-secondary" id="cancel-create-task">
+                            <i class="fa-solid fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="../static/database.js"></script>
     <script src="../static/home.js"></script>

@@ -46,13 +46,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (adminBtn) {
                 adminBtn.style.display = 'block';
             }
+            
+            // Mostrar botão de criar tarefa
+            const createTaskBtn = document.getElementById('create-task-btn');
+            if (createTaskBtn) {
+                createTaskBtn.style.display = 'block';
+                createTaskBtn.addEventListener('click', openCreateTaskModal);
+            }
         }
     }
     
     // Carregar notificações do usuário
     function loadNotifications() {
         const currentUser = window.DB ? window.DB.getCurrentUser() : null;
-        const notificationsList = notificationsPopup.querySelector('.notifications-popup');
         
         if (!currentUser || !currentUser.notifications || currentUser.notifications.length === 0) {
             // Usuário sem notificações - mostrar mensagem
@@ -67,10 +73,68 @@ document.addEventListener('DOMContentLoaded', function() {
             // Esconder badge
             updateNotificationBadge(0);
         } else {
+            // Limpar notificações existentes
+            const existingNotifications = notificationsPopup.querySelectorAll('.notification-item');
+            existingNotifications.forEach(item => item.remove());
+            
+            // Renderizar notificações do usuário
+            currentUser.notifications.forEach(notification => {
+                const notifElement = createNotificationElement(notification);
+                notificationsPopup.appendChild(notifElement);
+            });
+            
             // Carregar notificações do usuário
             const unreadCount = currentUser.notifications.filter(n => !n.read).length;
             updateNotificationBadge(unreadCount);
         }
+    }
+    
+    // Criar elemento de notificação
+    function createNotificationElement(notification) {
+        const div = document.createElement('div');
+        div.className = `notification-item${!notification.read ? ' unread' : ''}`;
+        div.dataset.notificationId = notification.id;
+        
+        const iconClass = notification.icon || 'fa-bell';
+        const timeAgo = getTimeAgo(notification.timestamp);
+        
+        div.innerHTML = `
+            <div class="notification-icon">
+                <i class="fa-solid ${iconClass}"></i>
+            </div>
+            <div class="notification-content">
+                <div class="notification-title">${notification.title}</div>
+                <div class="notification-desc">${notification.description}</div>
+                <div class="notification-time">${timeAgo}</div>
+            </div>
+        `;
+        
+        div.addEventListener('click', function() {
+            if (!notification.read) {
+                window.DB.markNotificationAsRead(notification.id);
+                div.classList.remove('unread');
+                const currentCount = parseInt(notificationBadge.textContent) || 0;
+                updateNotificationBadge(currentCount - 1);
+            }
+        });
+        
+        return div;
+    }
+    
+    // Calcular tempo decorrido
+    function getTimeAgo(timestamp) {
+        const now = new Date();
+        const notifTime = new Date(timestamp);
+        const diffMs = now - notifTime;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+        
+        if (diffMins < 1) return 'Agora';
+        if (diffMins < 60) return `Há ${diffMins} minuto${diffMins > 1 ? 's' : ''}`;
+        if (diffHours < 24) return `Há ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
+        if (diffDays < 7) return `Há ${diffDays} dia${diffDays > 1 ? 's' : ''}`;
+        return notifTime.toLocaleDateString('pt-BR');
     }
     
     // Inicializar configurações do usuário
@@ -116,31 +180,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Marcar todas as notificações como lidas
     if (markAllReadBtn) {
         markAllReadBtn.addEventListener('click', function() {
-            const unreadNotifications = document.querySelectorAll('.notification-item.unread');
-            unreadNotifications.forEach(notification => {
-                notification.classList.remove('unread');
-                notification.style.animation = 'fadeIn 0.3s ease';
-            });
-            
-            // Atualizar o badge de notificações
-            updateNotificationBadge(0);
+            if (window.DB) {
+                window.DB.markAllNotificationsAsRead();
+                const unreadNotifications = document.querySelectorAll('.notification-item.unread');
+                unreadNotifications.forEach(notification => {
+                    notification.classList.remove('unread');
+                    notification.style.animation = 'fadeIn 0.3s ease';
+                });
+                
+                // Atualizar o badge de notificações
+                updateNotificationBadge(0);
+            }
         });
     }
     
-    // Marcar notificação individual como lida
-    document.querySelectorAll('.notification-item').forEach(item => {
-        item.addEventListener('click', function() {
-            if (this.classList.contains('unread')) {
-                this.classList.remove('unread');
-                const currentCount = parseInt(notificationBadge.textContent) || 0;
-                updateNotificationBadge(currentCount - 1);
-                
-                // Simular ação da notificação
-                const title = this.querySelector('.notification-title').textContent;
-                console.log('Notificação clicada:', title);
-            }
-        });
-    });
+    // Remover event listeners antigos de notificações individuais (serão criados dinamicamente)
     
     // Fechar o pop-up ao clicar fora dele
     document.addEventListener('click', function(e) {
@@ -232,6 +286,83 @@ document.addEventListener('DOMContentLoaded', function() {
         // Simular menu de ações rápidas
         console.log('Abrindo menu de ações rápidas...');
     });
+    
+    // ========== MODAL DE CRIAR TAREFA ==========
+    
+    function openCreateTaskModal() {
+        const modal = document.getElementById('modal-create-task');
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+    }
+    
+    function closeCreateTaskModal() {
+        const modal = document.getElementById('modal-create-task');
+        if (modal) {
+            modal.style.display = 'none';
+            // Limpar formulário
+            document.getElementById('form-create-task').reset();
+        }
+    }
+    
+    // Event listeners do modal
+    const closeModalBtn = document.getElementById('close-create-task');
+    const cancelBtn = document.getElementById('cancel-create-task');
+    const formCreateTask = document.getElementById('form-create-task');
+    
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeCreateTaskModal);
+    }
+    
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeCreateTaskModal);
+    }
+    
+    // Fechar modal ao clicar fora
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('modal-create-task');
+        if (e.target === modal) {
+            closeCreateTaskModal();
+        }
+    });
+    
+    // Submit do formulário de criar tarefa
+    if (formCreateTask) {
+        formCreateTask.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('task-title').value.trim();
+            const description = document.getElementById('task-description').value.trim();
+            const departmentSelect = document.getElementById('task-department');
+            const departmentValue = departmentSelect.value;
+            const department = departmentSelect.options[departmentSelect.selectedIndex].text;
+            const points = parseInt(document.getElementById('task-points').value);
+            
+            if (!title || !departmentValue) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+            
+            // Criar tarefa usando o DB
+            const result = window.DB.createTask({
+                title: title,
+                description: description,
+                department: department,
+                departmentValue: departmentValue,
+                points: points
+            });
+            
+            if (result.success) {
+                alert(`✅ Tarefa criada com sucesso!\\n\\nTodos os usuários do departamento "${department}" foram notificados.`);
+                closeCreateTaskModal();
+                
+                // Recarregar notificações para ver a confirmação
+                loadNotifications();
+            } else {
+                alert(`❌ Erro ao criar tarefa: ${result.error}`);
+            }
+        });
+    }
 });
 
 // Redirecionamento para ranking ao clicar no troféu
