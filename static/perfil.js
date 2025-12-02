@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     // Elementos do perfil
     const editProfileBtn = document.getElementById('edit-profile');
     const changeAvatarBtn = document.getElementById('change-avatar');
@@ -52,12 +52,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Carregar dados do usuário
-    function loadUserData() {
+    async function loadUserData() {
         // Prioriza o nome armazenado na sessão (login) se existir
         let currentUser = window.DB ? window.DB.getCurrentUser() : null;
         // Garantir dados mais recentes do usuário vindo do banco local
         if (currentUser && window.DB && typeof window.DB.findUser === 'function') {
-            const fresh = window.DB.findUser('id', currentUser.id);
+            const fresh = await window.DB.findUser('id', currentUser.id);
             if (fresh) {
                 currentUser = fresh;
                 // Atualiza sessão com o usuário fresco para refletir estatísticas e atividades
@@ -106,14 +106,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Carregar habilidades (zerado para novos usuários)
-        loadSkills();
+        await loadSkills();
         
         // Carregar atividades recentes (zerado para novos usuários)
-        loadRecentActivities();
+        await loadRecentActivities();
     }
 
     // Carregar habilidades
-    function loadSkills() {
+    async function loadSkills() {
         const skillsList = document.getElementById('skills-list');
         const currentUser = window.DB ? window.DB.getCurrentUser() : null;
         
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Carregar atividades recentes
-    function loadRecentActivities() {
+    async function loadRecentActivities() {
         const activityList = document.getElementById('activity-list');
         const currentUser = window.DB ? window.DB.getCurrentUser() : null;
         
@@ -177,14 +177,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Inicializar dados do usuário
-    loadUserData();
+    await loadUserData();
 
     // Atualizar automaticamente quando a aba voltar a ficar visível
-    document.addEventListener('visibilitychange', () => {
+    document.addEventListener('visibilitychange', async () => {
         if (!document.hidden) {
-            loadUserData();
-            loadRecentActivities();
-            loadSkills();
+            await loadUserData();
+            await loadRecentActivities();
+            await loadSkills();
         }
     });
 

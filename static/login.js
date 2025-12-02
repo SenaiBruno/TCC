@@ -137,6 +137,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Máscara de telefone
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 11) {
+                value = value.substring(0, 11);
+            }
+            
+            if (value.length > 10) {
+                value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+            } else if (value.length > 6) {
+                value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            } else if (value.length > 2) {
+                value = value.replace(/(\d{2})(\d{0,5})/, '($1) $2');
+            } else if (value.length > 0) {
+                value = value.replace(/(\d*)/, '($1');
+            }
+            
+            e.target.value = value;
+        });
+    }
+
     // Validar força da senha em tempo real
     if (senhaInput) {
         senhaInput.addEventListener('input', function() {
@@ -194,9 +217,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!phoneInput.value.trim()) {
                 showError('phone-error', 'Telefone é obrigatório');
                 isValid = false;
-            } else if (phoneInput.value.trim().length < 10) {
-                showError('phone-error', 'Digite um telefone válido');
-                isValid = false;
+            } else {
+                const phoneDigits = phoneInput.value.replace(/\D/g, '');
+                if (phoneDigits.length < 10 || phoneDigits.length > 11) {
+                    showError('phone-error', 'Digite um telefone válido com DDD');
+                    isValid = false;
+                }
             }
 
             // Validar localização

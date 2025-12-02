@@ -673,7 +673,40 @@ const DB = {
         localStorage.setItem(this.STORAGE_KEYS.MESSAGES, JSON.stringify(messages));
     },
 
-    createMessage(fromUserId, toUserId, content) {
+    async createMessage(fromUserId, toUserId, content) {
+        if (this.mode === 'supabase') {
+            try {
+                const { data, error } = await window.supabaseClient
+                    .from('messages')
+                    .insert([{
+                        from_user_id: fromUserId,
+                        to_user_id: toUserId,
+                        content: content,
+                        read: false
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                return { 
+                    success: true, 
+                    message: {
+                        id: data.id,
+                        fromUserId: data.from_user_id,
+                        toUserId: data.to_user_id,
+                        content: data.content,
+                        timestamp: data.created_at,
+                        read: data.read
+                    }
+                };
+            } catch (error) {
+                console.error('Erro ao criar mensagem:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Fallback localStorage
         const messages = this.getAllMessages();
         
         const newMessage = {
@@ -691,7 +724,62 @@ const DB = {
         return { success: true, message: newMessage };
     },
 
-    getUserConversations(userId) {
+    async getUserConversations(userId) {
+        if (this.mode === 'supabase') {
+            try {
+                const { data: messages, error } = await window.supabaseClient
+                    .from('messages')
+                    .select('*')
+                    .or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                const conversationsMap = {};
+
+                messages.forEach(msg => {
+                    let otherUserId;
+                    if (msg.from_user_id === userId) {
+                        otherUserId = msg.to_user_id;
+                    } else if (msg.to_user_id === userId) {
+                        otherUserId = msg.from_user_id;
+                    } else {
+                        return;
+                    }
+
+                    if (!conversationsMap[otherUserId]) {
+                        conversationsMap[otherUserId] = {
+                            otherUserId: otherUserId,
+                            messages: []
+                        };
+                    }
+
+                    conversationsMap[otherUserId].messages.push({
+                        id: msg.id,
+                        senderId: msg.from_user_id,
+                        receiverId: msg.to_user_id,
+                        text: msg.content,
+                        timestamp: msg.created_at,
+                        read: msg.read
+                    });
+                });
+
+                Object.values(conversationsMap).forEach(conv => {
+                    conv.messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                });
+
+                return Object.values(conversationsMap).sort((a, b) => {
+                    const lastA = a.messages[a.messages.length - 1]?.timestamp || 0;
+                    const lastB = b.messages[b.messages.length - 1]?.timestamp || 0;
+                    return new Date(lastB) - new Date(lastA);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar conversas:', error);
+                return [];
+            }
+        }
+
+        // Fallback localStorage
         const messages = this.getAllMessages();
         const conversationsMap = {};
 
@@ -733,13 +821,30 @@ const DB = {
         });
     },
 
-    markAsRead(messageId) {
+    async markAsRead(messageId) {
+        if (this.mode === 'supabase') {
+            try {
+                const { error } = await window.supabaseClient
+                    .from('messages')
+                    .update({ read: true })
+                    .eq('id', messageId);
+
+                if (error) throw error;
+                return { success: true };
+            } catch (error) {
+                console.error('Erro ao marcar mensagem como lida:', error);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Fallback localStorage
         const messages = this.getAllMessages();
         const msg = messages.find(m => m.id === messageId);
         if (msg) {
             msg.read = true;
             this.saveMessages(messages);
         }
+        return { success: true };
     },
 
     getTasksByDepartment(departmentValue) {

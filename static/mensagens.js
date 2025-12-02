@@ -2,7 +2,7 @@ let conversaAtual = null;
 let usuarioAtual = null;
 let refreshInterval = null;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     // Verificar se está logado
     if (!window.DB || !window.DB.isLoggedIn()) {
         window.location.href = 'login.html';
@@ -28,20 +28,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Carregar conversas existentes (apenas a lista, sem abrir nenhuma)
-    carregarConversas();
+    await carregarConversas();
     
     // Mostrar estado inicial vazio
     mostrarEstadoVazio();
     
     // Auto-refresh a cada 3 segundos para simular tempo real
-    refreshInterval = setInterval(() => {
+    refreshInterval = setInterval(async () => {
         if (conversaAtual) {
             const scrollPos = mensagensContainer.scrollTop;
             const scrollHeight = mensagensContainer.scrollHeight;
             const isAtBottom = scrollHeight - scrollPos - mensagensContainer.clientHeight < 50;
             
-            carregarMensagens(conversaAtual, !isAtBottom);
-            carregarConversas(); // Apenas atualizar lista, não trocar conversa
+            await carregarMensagens(conversaAtual, !isAtBottom);
+            await carregarConversas(); // Apenas atualizar lista, não trocar conversa
         }
     }, 3000);
 
@@ -104,9 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function carregarConversas() {
+async function carregarConversas() {
     const listaConversas = document.getElementById('listaConversas');
-    const conversations = window.DB.getUserConversations(usuarioAtual.id);
+    const conversations = await window.DB.getUserConversations(usuarioAtual.id);
     
     listaConversas.innerHTML = '';
     
@@ -142,10 +142,10 @@ function carregarConversas() {
             ${naoLidas > 0 ? `<span class="badge-nao-lida">${naoLidas}</span>` : ''}
         `;
 
-        conversaItem.addEventListener('click', function() {
+        conversaItem.addEventListener('click', async function() {
             document.querySelectorAll('.conversa-item').forEach(i => i.classList.remove('ativo'));
             this.classList.add('ativo');
-            abrirConversa(outroUsuario.id);
+            await abrirConversa(outroUsuario.id);
         });
 
         listaConversas.appendChild(conversaItem);
@@ -198,11 +198,11 @@ function carregarContatos() {
                     ${usuario.department ? `<p style="font-size: 12px; color: #708090; margin: 2px 0 0 0;">${usuario.department}</p>` : ''}
                 </div>
             `;
-            contatoItem.addEventListener('click', function(e) {
+            contatoItem.addEventListener('click', async function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Clicou no contato:', usuario.fullName, 'ID:', usuario.id);
-                iniciarConversa(usuario.id);
+                await iniciarConversa(usuario.id);
             });
             listaContatos.appendChild(contatoItem);
         });
@@ -224,7 +224,7 @@ function carregarContatos() {
     renderizarContatos();
 }
 
-function iniciarConversa(userId) {
+async function iniciarConversa(userId) {
     console.log('=== INICIANDO CONVERSA ===');
     console.log('userId:', userId);
     console.log('usuarioAtual:', usuarioAtual);
@@ -251,7 +251,7 @@ function iniciarConversa(userId) {
     console.log('conversaAtual definida como:', conversaAtual);
     
     // Abrir a conversa imediatamente
-    abrirConversa(userId);
+    await abrirConversa(userId);
     
     // NÃO recarregar lista de conversas aqui para evitar voltar à conversa anterior
     // A lista será recarregada apenas quando enviar a primeira mensagem
@@ -259,12 +259,12 @@ function iniciarConversa(userId) {
     console.log('=== CONVERSA INICIADA ===');
 }
 
-function abrirConversa(userId) {
+async function abrirConversa(userId) {
     console.log('=== ABRINDO CONVERSA ===');
     console.log('userId:', userId);
     
     conversaAtual = userId;
-    const outroUsuario = window.DB.findUser('id', userId);
+    const outroUsuario = await window.DB.findUser('id', userId);
     
     console.log('outroUsuario:', outroUsuario);
     
@@ -299,7 +299,7 @@ function abrirConversa(userId) {
     console.log('Header atualizado');
     
     // Carregar mensagens
-    carregarMensagens(userId);
+    await carregarMensagens(userId);
     
     // Focar no input
     const inputMensagem = document.getElementById('inputMensagem');
@@ -310,9 +310,9 @@ function abrirConversa(userId) {
     console.log('=== CONVERSA ABERTA ===');
 }
 
-function carregarMensagens(userId, manterScroll = false) {
+async function carregarMensagens(userId, manterScroll = false) {
     const mensagensContainer = document.getElementById('mensagensContainer');
-    const conversations = window.DB.getUserConversations(usuarioAtual.id);
+    const conversations = await window.DB.getUserConversations(usuarioAtual.id);
     const conversa = conversations.find(c => c.otherUserId === userId);
     
     const scrollAntes = mensagensContainer.scrollTop;
@@ -321,7 +321,7 @@ function carregarMensagens(userId, manterScroll = false) {
     mensagensContainer.innerHTML = '';
 
     if (!conversa || conversa.messages.length === 0) {
-        const outroUsuario = window.DB.findUser('id', userId);
+        const outroUsuario = await window.DB.findUser('id', userId);
         const inicial = outroUsuario ? outroUsuario.name.charAt(0).toUpperCase() : '?';
         const nomeUsuario = outroUsuario ? outroUsuario.fullName : 'este usuário';
         
@@ -341,7 +341,7 @@ function carregarMensagens(userId, manterScroll = false) {
         return;
     }
 
-    const outroUsuario = window.DB.findUser('id', userId);
+    const outroUsuario = await window.DB.findUser('id', userId);
     const inicial = outroUsuario.name.charAt(0).toUpperCase();
 
     conversa.messages.forEach(msg => {
@@ -392,7 +392,7 @@ function carregarMensagens(userId, manterScroll = false) {
     });
 }
 
-function enviarMensagem() {
+async function enviarMensagem() {
     const inputMensagem = document.getElementById('inputMensagem');
     const texto = inputMensagem.value.trim();
     
@@ -412,7 +412,7 @@ function enviarMensagem() {
     console.log('Texto:', texto);
 
     // Criar mensagem no banco de dados
-    const resultado = window.DB.createMessage(usuarioAtual.id, conversaAtual, texto);
+    const resultado = await window.DB.createMessage(usuarioAtual.id, conversaAtual, texto);
     
     console.log('Resultado:', resultado);
 
@@ -421,11 +421,11 @@ function enviarMensagem() {
         inputMensagem.value = '';
         
         // Recarregar mensagens imediatamente
-        carregarMensagens(conversaAtual);
+        await carregarMensagens(conversaAtual);
         
         // Atualizar lista de conversas
-        setTimeout(() => {
-            carregarConversas();
+        setTimeout(async () => {
+            await carregarConversas();
         }, 100);
         
         // Focar no input novamente
