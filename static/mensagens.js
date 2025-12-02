@@ -35,13 +35,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // Auto-refresh a cada 3 segundos para simular tempo real
     refreshInterval = setInterval(async () => {
+        // Sempre atualizar lista de conversas para ver novas mensagens
+        await carregarConversas();
+        
+        // Se tiver conversa aberta, atualizar mensagens também
         if (conversaAtual) {
             const scrollPos = mensagensContainer.scrollTop;
             const scrollHeight = mensagensContainer.scrollHeight;
             const isAtBottom = scrollHeight - scrollPos - mensagensContainer.clientHeight < 50;
             
             await carregarMensagens(conversaAtual, !isAtBottom);
-            await carregarConversas(); // Apenas atualizar lista, não trocar conversa
         }
     }, 3000);
 
