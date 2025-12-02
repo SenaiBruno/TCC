@@ -194,6 +194,14 @@
                     <button class="tab" data-tab="mine" id="tab-mine">Minhas</button>
                 </div>
 
+                <!-- Filtros (visível apenas para admin no tab Disponíveis/Todas) -->
+                <div class="filters" id="tasks-filters" style="display:none;">
+                    <button class="filter-pill active" data-status="all">Todos</button>
+                    <button class="filter-pill" data-status="pending">Pendentes</button>
+                    <button class="filter-pill" data-status="in_progress">Em progresso</button>
+                    <button class="filter-pill" data-status="completed">Concluídas</button>
+                </div>
+
                 <!-- Lista: Disponíveis/Todas -->
                 <div id="tasks-empty" style="display:none; color:#708090; text-align:center; padding: 12px 0;"></div>
                 <div class="tasks-list" id="tasks-list"></div>

@@ -599,6 +599,37 @@ body {
     border-color: transparent;
 }
 
+/* Filters for admin in tasks modal */
+.filters {
+    display: flex;
+    gap: 8px;
+    margin: 6px 0 14px 0;
+}
+
+.filter-pill {
+    background: #f7fafc;
+    color: #345;
+    border: 1px solid #e3e8ef;
+    border-radius: 18px;
+    padding: 6px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+}
+
+.filter-pill:hover {
+    background: #eef5ff;
+    border-color: #4A90E2;
+    color: #1E3A5F;
+}
+
+.filter-pill.active {
+    background: linear-gradient(135deg, #1E3A5F, #4A90E2);
+    color: #fff;
+    border-color: transparent;
+}
+
 /* Tasks list inside modal */
 .tasks-list {
     display: flex;

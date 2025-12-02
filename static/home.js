@@ -287,6 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // ========== MODAL DE TAREFAS DISPONÍVEIS ==========
+    let adminAvailableFilter = 'all';
     function openTasksModal() {
         const modal = document.getElementById('modal-tasks');
         if (!window.DB) return alert('Base de dados indisponível.');
@@ -308,10 +309,22 @@ document.addEventListener('DOMContentLoaded', function() {
             tabAvail.textContent = currentUser.isAdmin ? 'Todas' : 'Disponíveis';
         }
 
+        // Mostrar/ocultar filtros para admin
+        const filters = document.getElementById('tasks-filters');
+        if (filters) {
+            filters.style.display = currentUser.isAdmin ? '' : 'none';
+            // Resetar filtro ao abrir
+            adminAvailableFilter = 'all';
+            filters.querySelectorAll('.filter-pill').forEach(btn => btn.classList.remove('active'));
+            const first = filters.querySelector('[data-status="all"]');
+            if (first) first.classList.add('active');
+        }
+
         // Mostrar listas e renderizar
         switchTab('available');
         renderAvailableTasks();
         renderMyTasks();
+        updateTabCounters();
     }
 
     function closeTasksModal() {
@@ -328,8 +341,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const allTasks = window.DB.getAllTasks();
         let items = [];
         if (currentUser.isAdmin) {
-            // Admin vê todas as tarefas
-            items = allTasks.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            // Admin vê todas as tarefas (aplica filtro de status)
+            items = allTasks
+                .filter(t => {
+                    if (adminAvailableFilter === 'all') return true;
+                    return t.status === adminAvailableFilter;
+                })
+                .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
         } else {
             // Colaborador vê somente tarefas do departamento pendentes
             items = allTasks
@@ -341,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!items || items.length === 0) {
             if (empty) {
                 empty.textContent = currentUser.isAdmin
-                    ? 'Não há tarefas no sistema.'
+                    ? (adminAvailableFilter === 'all' ? 'Não há tarefas no sistema.' : 'Nenhuma tarefa encontrada para o filtro selecionado.')
                     : 'Não há tarefas disponíveis para o seu departamento.';
                 empty.style.display = 'block';
             }
@@ -383,12 +401,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.disabled = true;
                     // Recarregar gráfico e possivelmente lista (remove item)
                     renderAvailableTasks();
+                    updateTabCounters();
                     alert('Tarefa aceita! Ela aparecerá em suas atividades.');
                 } else {
                     alert('Não foi possível aceitar: ' + res.error);
                 }
             });
         });
+
+        updateTabCounters();
     }
 
     function getUserNameById(id) {
@@ -449,6 +470,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     renderAvailableTasks();
                     renderMyTasks();
                     updatePerformanceChart();
+                    updateTabCounters();
                 } else {
                     alert('Não foi possível concluir: ' + res.error);
                 }
@@ -465,6 +487,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const emptyMine = document.getElementById('tasks-empty-mine');
         const tabAvail = document.getElementById('tab-available');
         const tabMine = document.getElementById('tab-mine');
+        const filters = document.getElementById('tasks-filters');
+        const isAdmin = window.DB && window.DB.isAdmin && window.DB.isAdmin();
 
         if (which === 'available') {
             listAvail.style.display = '';
@@ -472,12 +496,14 @@ document.addEventListener('DOMContentLoaded', function() {
             listMine.style.display = 'none';
             emptyMine.style.display = 'none';
             if (tabAvail && tabMine) { tabAvail.classList.add('active'); tabMine.classList.remove('active'); }
+            if (filters) filters.style.display = isAdmin ? '' : 'none';
         } else {
             listAvail.style.display = 'none';
             emptyAvail.style.display = 'none';
             listMine.style.display = '';
             emptyMine.style.display = '';
             if (tabAvail && tabMine) { tabAvail.classList.remove('active'); tabMine.classList.add('active'); }
+            if (filters) filters.style.display = 'none';
         }
     }
 
@@ -488,6 +514,38 @@ document.addEventListener('DOMContentLoaded', function() {
             const which = btn.dataset.tab;
             switchTab(which);
         });
+    }
+
+    // Filtros admin - listeners
+    const filters = document.getElementById('tasks-filters');
+    if (filters) {
+        filters.addEventListener('click', (e) => {
+            const pill = e.target.closest('.filter-pill');
+            if (!pill) return;
+            const status = pill.getAttribute('data-status');
+            adminAvailableFilter = status;
+            filters.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+            pill.classList.add('active');
+            renderAvailableTasks();
+            updateTabCounters();
+        });
+    }
+
+    function updateTabCounters() {
+        const currentUser = window.DB.getCurrentUser();
+        const allTasks = window.DB.getAllTasks();
+        let availableCount = 0;
+        if (currentUser.isAdmin) {
+            availableCount = allTasks.filter(t => adminAvailableFilter === 'all' ? true : t.status === adminAvailableFilter).length;
+        } else {
+            availableCount = allTasks.filter(t => t.departmentValue === currentUser.departmentValue && t.status === 'pending' && !t.assignedTo).length;
+        }
+        const mineCount = allTasks.filter(t => t.assignedTo === currentUser.id).length;
+
+        const tabAvail = document.getElementById('tab-available');
+        const tabMine = document.getElementById('tab-mine');
+        if (tabAvail) tabAvail.textContent = (currentUser.isAdmin ? 'Todas' : 'Disponíveis') + ` (${availableCount})`;
+        if (tabMine) tabMine.textContent = `Minhas (${mineCount})`;
     }
     
     // ========== MODAL DE CRIAR TAREFA ==========
