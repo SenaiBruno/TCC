@@ -189,10 +189,18 @@
                 <span class="close-modal" id="close-tasks">&times;</span>
             </div>
             <div class="modal-body">
-                <div id="tasks-empty" style="display:none; color:#708090; text-align:center; padding: 12px 0;">
-                    Não há tarefas disponíveis para o seu departamento.
+                <div class="tabs" id="tasks-tabs">
+                    <button class="tab active" data-tab="available" id="tab-available">Disponíveis</button>
+                    <button class="tab" data-tab="mine" id="tab-mine">Minhas</button>
                 </div>
+
+                <!-- Lista: Disponíveis/Todas -->
+                <div id="tasks-empty" style="display:none; color:#708090; text-align:center; padding: 12px 0;"></div>
                 <div class="tasks-list" id="tasks-list"></div>
+
+                <!-- Lista: Minhas -->
+                <div id="tasks-empty-mine" style="display:none; color:#708090; text-align:center; padding: 12px 0;">Você ainda não aceitou nenhuma tarefa.</div>
+                <div class="tasks-list" id="tasks-list-mine" style="display:none;"></div>
             </div>
         </div>
     </div>

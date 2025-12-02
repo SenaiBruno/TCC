@@ -298,15 +298,20 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'flex';
         }
 
-        // Ajustar título para admins
+        // Ajustar título e tabs
         const titleEl = modal.querySelector('.modal-header h2');
+        const tabAvail = document.getElementById('tab-available');
         if (titleEl) {
-            titleEl.innerHTML = currentUser.isAdmin
-                ? '<i class="fa-solid fa-list-check"></i> Todas as tarefas'
-                : '<i class="fa-solid fa-list-check"></i> Tarefas disponíveis';
+            titleEl.innerHTML = '<i class="fa-solid fa-list-check"></i> Tarefas';
+        }
+        if (tabAvail) {
+            tabAvail.textContent = currentUser.isAdmin ? 'Todas' : 'Disponíveis';
         }
 
+        // Mostrar listas e renderizar
+        switchTab('available');
         renderAvailableTasks();
+        renderMyTasks();
     }
 
     function closeTasksModal() {
@@ -393,6 +398,96 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch {
             return '—';
         }
+    }
+
+    // Renderizar minhas tarefas (atribuídas ao usuário)
+    function renderMyTasks() {
+        const list = document.getElementById('tasks-list-mine');
+        const empty = document.getElementById('tasks-empty-mine');
+        if (!list) return;
+
+        const currentUser = window.DB.getCurrentUser();
+        const allTasks = window.DB.getAllTasks();
+        const my = allTasks
+            .filter(t => t.assignedTo === currentUser.id)
+            .sort((a,b) => new Date(b.assignedAt || b.createdAt) - new Date(a.assignedAt || a.createdAt));
+
+        list.innerHTML = '';
+        if (!my || my.length === 0) {
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+        if (empty) empty.style.display = 'none';
+
+        my.forEach(task => {
+            const el = document.createElement('div');
+            el.className = 'task-item';
+            const canComplete = task.status === 'in_progress' && task.assignedTo === currentUser.id;
+            el.innerHTML = `
+                <div>
+                    <div class="task-title">${task.title}</div>
+                    ${task.description ? `<div class="task-desc">${task.description}</div>` : ''}
+                    <div class="task-meta">
+                        <span><i class="fa-solid fa-building"></i> ${task.department}</span>
+                        <span><i class="fa-solid fa-star"></i> ${task.points} XP</span>
+                        <span><i class="fa-solid fa-tag"></i> ${task.status}</span>
+                    </div>
+                </div>
+                <div class="task-actions">
+                    ${canComplete ? `<button class="btn-complete" data-task-id="${task.id}"><i class="fa-solid fa-flag-checkered"></i> Concluir</button>` : ''}
+                </div>
+            `;
+            list.appendChild(el);
+        });
+
+        list.querySelectorAll('.btn-complete').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const taskId = this.getAttribute('data-task-id');
+                const res = window.DB.completeTask(taskId);
+                if (res.success) {
+                    alert('Parabéns! Tarefa concluída e XP atualizado.');
+                    renderAvailableTasks();
+                    renderMyTasks();
+                    updatePerformanceChart();
+                } else {
+                    alert('Não foi possível concluir: ' + res.error);
+                }
+            });
+        });
+    }
+
+    // Tabs switching
+    const tabs = document.getElementById('tasks-tabs');
+    function switchTab(which) {
+        const listAvail = document.getElementById('tasks-list');
+        const listMine = document.getElementById('tasks-list-mine');
+        const emptyAvail = document.getElementById('tasks-empty');
+        const emptyMine = document.getElementById('tasks-empty-mine');
+        const tabAvail = document.getElementById('tab-available');
+        const tabMine = document.getElementById('tab-mine');
+
+        if (which === 'available') {
+            listAvail.style.display = '';
+            emptyAvail.style.display = '';
+            listMine.style.display = 'none';
+            emptyMine.style.display = 'none';
+            if (tabAvail && tabMine) { tabAvail.classList.add('active'); tabMine.classList.remove('active'); }
+        } else {
+            listAvail.style.display = 'none';
+            emptyAvail.style.display = 'none';
+            listMine.style.display = '';
+            emptyMine.style.display = '';
+            if (tabAvail && tabMine) { tabAvail.classList.remove('active'); tabMine.classList.add('active'); }
+        }
+    }
+
+    if (tabs) {
+        tabs.addEventListener('click', (e) => {
+            const btn = e.target.closest('.tab');
+            if (!btn) return;
+            const which = btn.dataset.tab;
+            switchTab(which);
+        });
     }
     
     // ========== MODAL DE CRIAR TAREFA ==========
