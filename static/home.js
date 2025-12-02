@@ -401,6 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.disabled = true;
                     // Recarregar gráfico e possivelmente lista (remove item)
                     renderAvailableTasks();
+                    renderMyTasks();
                     updateTabCounters();
                     alert('Tarefa aceita! Ela aparecerá em suas atividades.');
                 } else {
