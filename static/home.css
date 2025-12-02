@@ -570,6 +570,76 @@ body {
     padding: 25px;
 }
 
+/* Tasks list inside modal */
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.task-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+.task-item:hover {
+    background: #f0f8ff;
+    border-color: #4A90E2;
+}
+
+.task-title {
+    font-weight: 700;
+    color: #1E3A5F;
+    margin-bottom: 4px;
+}
+
+.task-desc {
+    color: #708090;
+    font-size: 14px;
+}
+
+.task-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 12px;
+    color: #4A90E2;
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-accept {
+    background: linear-gradient(135deg, #32CD32, #28a745);
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.btn-accept:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(40, 167, 69, 0.25);
+}
+
+.btn-accept:disabled {
+    background: #b8e0b8;
+    cursor: default;
+    box-shadow: none;
+}
+
 .form-group {
     margin-bottom: 20px;
 }

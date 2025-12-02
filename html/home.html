@@ -181,6 +181,22 @@
         </a>
         </nav>
 
+    <!-- Modal: Tarefas Disponíveis -->
+    <div class="modal" id="modal-tasks">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-list-check"></i> Tarefas disponíveis</h2>
+                <span class="close-modal" id="close-tasks">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="tasks-empty" style="display:none; color:#708090; text-align:center; padding: 12px 0;">
+                    Não há tarefas disponíveis para o seu departamento.
+                </div>
+                <div class="tasks-list" id="tasks-list"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Criar Tarefa -->
     <div class="modal" id="modal-create-task">
         <div class="modal-content">

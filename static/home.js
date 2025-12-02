@@ -280,12 +280,87 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(style);
     
-    // Adicionar funcionalidade ao botão de plus do menu
+    // Adicionar funcionalidade ao botão de plus do menu -> abrir modal de tarefas
     const plusButton = document.querySelector('.plus');
     plusButton.addEventListener('click', function() {
-        // Simular menu de ações rápidas
-        console.log('Abrindo menu de ações rápidas...');
+        openTasksModal();
     });
+
+    // ========== MODAL DE TAREFAS DISPONÍVEIS ==========
+    function openTasksModal() {
+        const modal = document.getElementById('modal-tasks');
+        if (!window.DB) return alert('Base de dados indisponível.');
+        const currentUser = window.DB.getCurrentUser();
+        if (!currentUser) return (window.location.href = 'login.html');
+
+        // Mostrar modal
+        if (modal) {
+            modal.style.display = 'flex';
+        }
+
+        renderAvailableTasks();
+    }
+
+    function closeTasksModal() {
+        const modal = document.getElementById('modal-tasks');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function renderAvailableTasks() {
+        const list = document.getElementById('tasks-list');
+        const empty = document.getElementById('tasks-empty');
+        if (!list) return;
+
+        const currentUser = window.DB.getCurrentUser();
+        const allTasks = window.DB.getAllTasks();
+        const available = allTasks
+            .filter(t => t.departmentValue === currentUser.departmentValue && t.status === 'pending' && !t.assignedTo)
+            .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        list.innerHTML = '';
+        if (available.length === 0) {
+            empty.style.display = 'block';
+            return;
+        }
+        empty.style.display = 'none';
+
+        available.forEach(task => {
+            const el = document.createElement('div');
+            el.className = 'task-item';
+            el.innerHTML = `
+                <div>
+                    <div class="task-title">${task.title}</div>
+                    ${task.description ? `<div class="task-desc">${task.description}</div>` : ''}
+                    <div class="task-meta">
+                        <span><i class="fa-solid fa-building"></i> ${task.department}</span>
+                        <span><i class="fa-solid fa-star"></i> ${task.points} XP</span>
+                        <span><i class="fa-solid fa-clock"></i> ${new Date(task.createdAt).toLocaleString('pt-BR')}</span>
+                    </div>
+                </div>
+                <div class="task-actions">
+                    <button class="btn-accept" data-task-id="${task.id}"><i class="fa-solid fa-check"></i> Aceitar</button>
+                </div>
+            `;
+            list.appendChild(el);
+        });
+
+        // bind accepts
+        list.querySelectorAll('.btn-accept').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const taskId = this.getAttribute('data-task-id');
+                const res = window.DB.assignTask(taskId, window.DB.getCurrentUser().id);
+                if (res.success) {
+                    this.textContent = 'Aceita';
+                    this.disabled = true;
+                    // Recarregar gráfico e possivelmente lista (remove item)
+                    renderAvailableTasks();
+                    alert('Tarefa aceita! Ela aparecerá em suas atividades.');
+                } else {
+                    alert('Não foi possível aceitar: ' + res.error);
+                }
+            });
+        });
+    }
     
     // ========== MODAL DE CRIAR TAREFA ==========
     
@@ -309,6 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeModalBtn = document.getElementById('close-create-task');
     const cancelBtn = document.getElementById('cancel-create-task');
     const formCreateTask = document.getElementById('form-create-task');
+    const closeTasksBtn = document.getElementById('close-tasks');
     
     if (closeModalBtn) {
         closeModalBtn.addEventListener('click', closeCreateTaskModal);
@@ -317,13 +393,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (cancelBtn) {
         cancelBtn.addEventListener('click', closeCreateTaskModal);
     }
+
+    if (closeTasksBtn) {
+        closeTasksBtn.addEventListener('click', closeTasksModal);
+    }
     
     // Fechar modal ao clicar fora
     window.addEventListener('click', function(e) {
-        const modal = document.getElementById('modal-create-task');
-        if (e.target === modal) {
-            closeCreateTaskModal();
-        }
+        const modalCreate = document.getElementById('modal-create-task');
+        const modalTasks = document.getElementById('modal-tasks');
+        if (e.target === modalCreate) closeCreateTaskModal();
+        if (e.target === modalTasks) closeTasksModal();
     });
     
     // Submit do formulário de criar tarefa
