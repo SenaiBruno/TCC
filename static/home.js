@@ -298,6 +298,14 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'flex';
         }
 
+        // Ajustar título para admins
+        const titleEl = modal.querySelector('.modal-header h2');
+        if (titleEl) {
+            titleEl.innerHTML = currentUser.isAdmin
+                ? '<i class="fa-solid fa-list-check"></i> Todas as tarefas'
+                : '<i class="fa-solid fa-list-check"></i> Tarefas disponíveis';
+        }
+
         renderAvailableTasks();
     }
 
@@ -313,20 +321,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const currentUser = window.DB.getCurrentUser();
         const allTasks = window.DB.getAllTasks();
-        const available = allTasks
-            .filter(t => t.departmentValue === currentUser.departmentValue && t.status === 'pending' && !t.assignedTo)
-            .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        let items = [];
+        if (currentUser.isAdmin) {
+            // Admin vê todas as tarefas
+            items = allTasks.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        } else {
+            // Colaborador vê somente tarefas do departamento pendentes
+            items = allTasks
+                .filter(t => t.departmentValue === currentUser.departmentValue && t.status === 'pending' && !t.assignedTo)
+                .sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+        }
 
         list.innerHTML = '';
-        if (available.length === 0) {
-            empty.style.display = 'block';
+        if (!items || items.length === 0) {
+            if (empty) {
+                empty.textContent = currentUser.isAdmin
+                    ? 'Não há tarefas no sistema.'
+                    : 'Não há tarefas disponíveis para o seu departamento.';
+                empty.style.display = 'block';
+            }
             return;
         }
         empty.style.display = 'none';
 
-        available.forEach(task => {
+        items.forEach(task => {
             const el = document.createElement('div');
             el.className = 'task-item';
+            const canAccept = task.status === 'pending' && (!task.assignedTo || task.assignedTo === currentUser.id);
+            const assignee = task.assignedTo ? getUserNameById(task.assignedTo) : '—';
             el.innerHTML = `
                 <div>
                     <div class="task-title">${task.title}</div>
@@ -335,10 +357,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span><i class="fa-solid fa-building"></i> ${task.department}</span>
                         <span><i class="fa-solid fa-star"></i> ${task.points} XP</span>
                         <span><i class="fa-solid fa-clock"></i> ${new Date(task.createdAt).toLocaleString('pt-BR')}</span>
+                        <span><i class="fa-solid fa-tag"></i> ${task.status}</span>
+                        ${currentUser.isAdmin ? `<span><i class=\"fa-solid fa-user\"></i> ${assignee}</span>` : ''}
                     </div>
                 </div>
                 <div class="task-actions">
-                    <button class="btn-accept" data-task-id="${task.id}"><i class="fa-solid fa-check"></i> Aceitar</button>
+                    ${canAccept ? `<button class="btn-accept" data-task-id="${task.id}"><i class="fa-solid fa-check"></i> Aceitar</button>` : ''}
                 </div>
             `;
             list.appendChild(el);
@@ -360,6 +384,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    }
+
+    function getUserNameById(id) {
+        try {
+            const u = window.DB.findUser('id', id);
+            return u ? (u.fullName || u.name || u.email) : '—';
+        } catch {
+            return '—';
+        }
     }
     
     // ========== MODAL DE CRIAR TAREFA ==========
