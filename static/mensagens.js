@@ -47,9 +47,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Abrir modal de nova conversa
     if (btnNovaConversa) {
-        btnNovaConversa.addEventListener('click', function() {
+        btnNovaConversa.addEventListener('click', async function() {
             modalNovaConversa.classList.add('show');
-            carregarContatos();
+            await carregarContatos();
         });
     }
 
@@ -115,9 +115,10 @@ async function carregarConversas() {
         return;
     }
 
-    conversations.forEach((conv, index) => {
-        const outroUsuario = window.DB.findUser('id', conv.otherUserId);
-        if (!outroUsuario) return;
+    // Usar for...of para permitir await dentro do loop
+    for (const conv of conversations) {
+        const outroUsuario = await window.DB.findUser('id', conv.otherUserId);
+        if (!outroUsuario) continue;
 
         const inicial = outroUsuario.name.charAt(0).toUpperCase();
         const ultimaMensagem = conv.messages[conv.messages.length - 1];
@@ -149,7 +150,7 @@ async function carregarConversas() {
         });
 
         listaConversas.appendChild(conversaItem);
-    });
+    }
 
     // Marcar conversa atual como ativa se existir
     if (conversaAtual) {
@@ -161,7 +162,7 @@ async function carregarConversas() {
     }
 }
 
-function carregarContatos() {
+async function carregarContatos() {
     const listaContatos = document.getElementById('listaContatos');
     const buscaContatos = document.getElementById('buscaContatos');
     
@@ -170,7 +171,7 @@ function carregarContatos() {
         return;
     }
     
-    const todosUsuarios = window.DB.getAllUsers();
+    const todosUsuarios = await window.DB.getAllUsersAsync();
     const usuarios = todosUsuarios.filter(u => u.id !== usuarioAtual.id);
 
     function renderizarContatos(filtro = '') {
